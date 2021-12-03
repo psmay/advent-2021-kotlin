@@ -9,7 +9,7 @@ Why Kotlin/IDEA?
 ----------------
 
 At work, I use Visual Studio and C#, and I'm really fond of LINQ, but I
-don't use Windows at home, every time I try to get something C#-based
+don't use Windows at home. Every time I try to get something C#-based
 going at home, using VS Code, I despair; the experience leaves much to
 be desired. So I thought I'd use Advent as an excuse to get friendly
 with something new. (But don't be surprised if my work shows a bit of
