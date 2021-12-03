@@ -13,7 +13,7 @@ don't use Windows at home, every time I try to get something C#-based
 going at home, using VS Code, I despair; the experience leaves much to
 be desired. So I thought I'd use Advent as an excuse to get friendly
 with something new. (But don't be surprised if my work shows a bit of
-C#-esqueness---or maybe even Perlishness.)
+C#-esqueness—or maybe even Perlishness.)
 
 So far, by comparison to C# with VS Code, IDEA is killing it. By
 comparison to C# and actual Visual Studio (which, if you haven't tried
