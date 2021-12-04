@@ -5,20 +5,22 @@ import java.util.*
 /**
  * Performs a fold operation one element at a time.
  */
-fun <T, R> Iterable<T>.foldIncrementally(
-    initial: R,
-    operation: (R, T) -> R,
-): Iterable<R> {
+fun <T, R> Sequence<T>.foldIncrementally(initial: R, operation: (R, T) -> R): Sequence<R> {
     val source = this
-    val sequence = sequence {
+    return sequence {
         var accumulator = initial
         for (element in source) {
             accumulator = operation(accumulator, element)
             yield(accumulator)
         }
     }
-    return sequence.asIterable()
 }
+
+/**
+ * Performs a fold operation one element at a time.
+ */
+fun <T, R> Iterable<T>.foldIncrementally(initial: R, operation: (R, T) -> R): Iterable<R> =
+    this.asSequence().foldIncrementally(initial, operation).asIterable()
 
 fun <T> Sequence<T>.pairwise(initial: T): Sequence<Pair<T, T>> {
     val source = this
