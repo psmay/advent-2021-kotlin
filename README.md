@@ -13,7 +13,7 @@ don't use Windows at home. Every time I try to get something C#-based
 going at home, using VS Code, I despair; the experience leaves much to
 be desired. So I thought I'd use Advent as an excuse to get friendly
 with something new. (But don't be surprised if my work shows a bit of
-C#-esqueness—or maybe even Perlishness.)
+C#-esqueness---or maybe even Perlishness.)
 
 So far, by comparison to C# with VS Code, IDEA is killing it. By
 comparison to C# and actual Visual Studio (which, if you haven't tried
@@ -37,13 +37,12 @@ is in the form of a data class with an enum parameter.) If possible, the
 parsing is done within the test module, though it may call into the main
 code for some help parsing. (The day 2 test also does this.)
 
-Where should I put the test input?
-----------------------------------
+Reinventing the wheel
+---------------------
 
-This being test input, it belongs with the tests, not the main code.
-
-All test input should be named and placed within the project at
-`src/test/resources/y2021/DayXXInput.txt`, where `XX` is the day number.
+Please forgive me for the now multiple places I've managed to implement
+things that I later found already exist in the standard library. I'm
+leaving them in place for posterity.
 
 Share and enjoy
 ---------------
