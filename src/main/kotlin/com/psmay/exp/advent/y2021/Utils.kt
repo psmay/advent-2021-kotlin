@@ -62,11 +62,9 @@ fun <T> Iterable<T>.pairwise() =
     @Suppress("DEPRECATION")
     this.asSequence().pairwise().asIterable()
 
-/**
- * Produces a sequence of full windows of the specified size from this sequence.
- * If this sequence is shorter than the specified size, the result is an empty sequence.
- */
-fun <T> Sequence<T>.windowed(size: Int): Sequence<List<T>> {
+@Deprecated("Use builtin windowed() instead.", replaceWith = ReplaceWith("windowed()"))
+@Suppress("FunctionName")
+fun <T> Sequence<T>.`makeshift windowed`(size: Int): Sequence<List<T>> {
     if (size < 1) throw IllegalArgumentException("Window size cannot be less than 1.")
 
     val buffer: Queue<T> = LinkedList()
@@ -91,53 +89,10 @@ fun <T> Sequence<T>.windowed(size: Int): Sequence<List<T>> {
     }
 }
 
-/**
- * Produces an iterable of full windows of the specified size from this iterable.
- * If this iterable is shorter than the specified size, the result is an empty iterable.
- */
-fun <T> Iterable<T>.windowed(size: Int) =
-    this.asSequence().windowed(size).asIterable()
-
-/**
- * Produces a sequence of windows of the specified size from this sequence.
- * The first and last (size - 1) elements, which may overlap, have their unspecified
- * elements filled with the given placeholder value. If the source is empty, the result
- * is empty.
- */
-fun <T> Sequence<T>.roughWindowed(size: Int, placeholder: T): Sequence<List<T>> {
-    if (size < 1) throw IllegalArgumentException("Window size cannot be less than 1.")
-    val buffer: Queue<T> = LinkedList(List(size) { placeholder })
-
-    val source = this
-    return sequence {
-        var wasEmpty = true
-        for (element in source) {
-            wasEmpty = false
-            buffer.remove()
-            buffer.add(element)
-            yield(buffer.toList())
-        }
-
-        if (!wasEmpty) {
-            var leftToFlush = size - 1
-            while (leftToFlush > 0) {
-                --leftToFlush
-                buffer.remove()
-                buffer.add(placeholder)
-                yield(buffer.toList())
-            }
-        }
-    }
-}
-
-/**
- * Produces an iterable of windows of the specified size from this iterable.
- * The first and last (size - 1) elements, which may overlap, have their unspecified
- * elements filled with the given placeholder value. If the source is empty, the result
- * is empty.
- */
-fun <T> Iterable<T>.roughWindowed(size: Int, placeholder: T) =
-    this.asSequence().roughWindowed(size, placeholder).asIterable()
+@Deprecated("Use builtin windowed() instead.", replaceWith = ReplaceWith("windowed()"))
+@Suppress("FunctionName", "DEPRECATION")
+fun <T> Iterable<T>.`makeshift windowed`(size: Int) =
+    this.asSequence().`makeshift windowed`(size).asIterable()
 
 /**
  * Produces the transpose of the specified list of sequences as a sequence of lists.

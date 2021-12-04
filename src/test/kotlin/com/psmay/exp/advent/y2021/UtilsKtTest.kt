@@ -71,47 +71,8 @@ internal class UtilsKtTest {
         dynamicTest("From $input to $expected") {
             val source = input.second
             val size = input.first
-            assertEquals(expected, source.windowed(size).toList())
-        }
-    }
-
-    data class RoughWindowedParams<T>(val source: Iterable<T>, val size: Int, val placeholder: T)
-
-    private fun <T> RoughWindowedParams<T>.run() = this.source.roughWindowed(this.size, this.placeholder)
-
-    @TestFactory
-    fun `roughWindowed produces specified lists`() = listOf(
-        RoughWindowedParams(listOf(10, 20, 30, 40, 50), 3, -1) to listOf(
-            listOf(-1, -1, 10),
-            listOf(-1, 10, 20),
-            listOf(10, 20, 30),
-            listOf(20, 30, 40),
-            listOf(30, 40, 50),
-            listOf(40, 50, -1),
-            listOf(50, -1, -1),
-        ),
-        RoughWindowedParams(listOf(10, 20, 30), 3, -1) to listOf(
-            listOf(-1, -1, 10),
-            listOf(-1, 10, 20),
-            listOf(10, 20, 30),
-            listOf(20, 30, -1),
-            listOf(30, -1, -1),
-        ),
-        RoughWindowedParams(listOf(10), 3, -1) to listOf(
-            listOf(-1, -1, 10),
-            listOf(-1, 10, -1),
-            listOf(10, -1, -1),
-        ),
-        RoughWindowedParams(listOf(10, 20), 3, -1) to listOf(
-            listOf(-1, -1, 10),
-            listOf(-1, 10, 20),
-            listOf(10, 20, -1),
-            listOf(20, -1, -1),
-        ),
-        RoughWindowedParams(emptyList<Int>(), 3, -1) to emptyList<List<Int>>(),
-    ).map { (input, expected) ->
-        dynamicTest("From $input to $expected") {
-            assertEquals(expected, input.run().toList())
+            @Suppress("DEPRECATION")
+            assertEquals(expected, source.`makeshift windowed`(size).toList())
         }
     }
 
