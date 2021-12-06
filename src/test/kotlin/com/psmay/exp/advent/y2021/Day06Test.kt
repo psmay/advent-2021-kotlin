@@ -29,7 +29,7 @@ internal class Day06Test {
 
     @TestFactory
     fun `part2 produces sample results as expected`() = listOf(
-        exampleInput to 5934
+        exampleInput to 26984457539
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = part2(input)
@@ -45,7 +45,7 @@ internal class Day06Test {
 
     @Test
     fun `part2 on puzzle input succeeds`() {
-        val result = part1(puzzleInput)
+        val result = part2(puzzleInput)
         println("Result: $result")
     }
 }
