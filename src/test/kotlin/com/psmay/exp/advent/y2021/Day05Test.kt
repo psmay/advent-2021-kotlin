@@ -70,7 +70,7 @@ internal class Day05Test {
 
     @TestFactory
     fun `part2 produces sample results from parse as expected`() = listOf(
-        exampleLineInput to 5
+        exampleLineInput to 12
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = runPart2OnLines(input)
