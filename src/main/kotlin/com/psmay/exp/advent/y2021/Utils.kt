@@ -153,7 +153,7 @@ fun <T : Comparable<T>> Iterable<T>.minAndMaxOrNull() = asSequence().minAndMaxAs
 /**
  * Finds the min and max of a collection.
  */
-fun <T : Comparable<T>> Iterable<T>.minAndMax() = asSequence().minAndMaxAsFound().sequenceSingle()
+fun <T : Comparable<T>> Iterable<T>.minAndMax() = asSequence().minAndMaxAsFound().iterableSingle()
 
 /**
  * Finds the nth number in the triangle progression 0, 0+1, 0+1+2, 0+1+2+3, ...
