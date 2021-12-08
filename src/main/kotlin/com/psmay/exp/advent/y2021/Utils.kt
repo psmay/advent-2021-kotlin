@@ -125,3 +125,22 @@ fun <T> List<Iterable<T>>.transpose(): Iterable<List<T>> =
  */
 fun <T> List<List<T>>.transpose(): List<List<T>> =
     this.map { it.asIterable() }.transpose().toList()
+
+/**
+ * Finds the min and max of an iterable, or null if there are no elements.
+ */
+// Not more efficient than calling separately, but it makes the exception on empty less awkward.
+fun <T : Comparable<T>> Iterable<T>.minAndMaxOrNull(): Pair<T, T>? {
+    val min = this.minOrNull()
+    val max = this.maxOrNull()
+    return if (min == null || max == null) null else (min to max)
+}
+
+/**
+ * Finds the nth number in the triangle progression 0, 0+1, 0+1+2, 0+1+2+3, ...
+ */
+// Could be done with a tailrec, but I think this gets the point across in fewer symbols.
+fun triangle(n: Int): Int {
+    require(n >= 0) { "Cannot compute for negative values." }
+    return (0..n).fold(0) { a, i -> a + i }
+}
