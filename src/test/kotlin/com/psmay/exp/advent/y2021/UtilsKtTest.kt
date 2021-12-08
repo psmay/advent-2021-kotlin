@@ -8,7 +8,8 @@ import org.junit.jupiter.api.TestFactory
 internal class UtilsKtTest {
     data class FoldIncrementallyParams<T, R>(val source: Sequence<T>, val initial: R, val operation: (R, T) -> R)
 
-    private fun <T, R> FoldIncrementallyParams<T, R>.run() = this.source.foldIncrementally(this.initial, this.operation)
+    private fun <T, R> FoldIncrementallyParams<T, R>.run() =
+        @Suppress("DEPRECATION") this.source.foldIncrementally(this.initial, this.operation)
 
     @TestFactory
     fun `foldIncrementally works with typical inputs`() = listOf(
@@ -27,7 +28,7 @@ internal class UtilsKtTest {
     @Test
     fun `foldIncrementally result can be traversed multiple times`() {
         val source = sequenceOf(1, 1, 1, 1, 1)
-        val result = source.foldIncrementally(0) { a, x -> a + x }
+        val result = @Suppress("DEPRECATION") source.foldIncrementally(0) { a, x -> a + x }
         val listA = result.toList()
         val listB = result.toList()
         val xC = result.map { it + 10 }.toList()

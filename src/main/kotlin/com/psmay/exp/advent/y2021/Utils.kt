@@ -5,6 +5,8 @@ import java.util.*
 /**
  * Performs a fold operation one element at a time.
  */
+@Deprecated("Use runningFold(...).drop(1) instead.",
+    replaceWith = ReplaceWith("runningFold(initial, operation).drop(1)"))
 fun <T, R> Sequence<T>.foldIncrementally(initial: R, operation: (R, T) -> R): Sequence<R> {
     val source = this
     return sequence {
