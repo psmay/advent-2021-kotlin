@@ -1,6 +1,8 @@
 package com.psmay.exp.advent.y2021
 
 import com.psmay.exp.advent.helpers.getTextFile
+import com.psmay.exp.advent.y2021.Day07.findCostInitialFormula
+import com.psmay.exp.advent.y2021.Day07.findCostNewFormula
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
@@ -19,11 +21,17 @@ internal class Day07Test {
     // exposed by the main code is more realistic.
 
     private fun part1(input: List<Int>): Int {
-        throw NotImplementedError()
+        return Day07
+            .findBestItineraries(input, ::findCostInitialFormula)
+            .map { it.cost }
+            .first()
     }
 
     private fun part2(input: List<Int>): Int {
-        throw NotImplementedError()
+        return Day07
+            .findBestItineraries(input, ::findCostNewFormula)
+            .map { it.cost }
+            .first()
     }
 
     @TestFactory
@@ -38,7 +46,7 @@ internal class Day07Test {
 
     @TestFactory
     fun `part2 produces sample results as expected`() = listOf(
-        exampleInput to -1
+        exampleInput to 168
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = part2(input)
