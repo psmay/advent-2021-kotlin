@@ -129,12 +129,34 @@ fun <T> List<List<T>>.transpose(): List<List<T>> =
 /**
  * Finds the min and max of an iterable, or null if there are no elements.
  */
-// Not more efficient than calling separately, but it makes the exception on empty less awkward.
-fun <T : Comparable<T>> Iterable<T>.minAndMaxOrNull(): Pair<T, T>? {
-    val min = this.minOrNull()
-    val max = this.maxOrNull()
-    return if (min == null || max == null) null else (min to max)
+// This implementation computes both extremes in a single pass.
+// There must be a way to do this without mutables, but it's probably not quite as easy to read.
+fun <T : Comparable<T>> Iterator<T>.minAndMaxOrNull(): Pair<T, T>? {
+    if (!this.hasNext()) {
+        return null
+    }
+
+    var min = this.next()
+    var max = min
+
+    while (this.hasNext()) {
+        val current = this.next()
+        if (min > current) min = current
+        if (max < current) max = current
+    }
+
+    return (min to max)
 }
+
+/**
+ * Finds the min and max of an iterable, or null if there are no elements.
+ */
+fun <T : Comparable<T>> Iterable<T>.minAndMaxOrNull() = this.iterator().minAndMaxOrNull()
+
+/**
+ * Finds the min and max of an iterable, or null if there are no elements.
+ */
+fun <T : Comparable<T>> Sequence<T>.minAndMaxOrNull() = this.iterator().minAndMaxOrNull()
 
 /**
  * Finds the nth number in the triangle progression 0, 0+1, 0+1+2, 0+1+2+3, ...

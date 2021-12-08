@@ -107,4 +107,46 @@ internal class UtilsKtTest {
     fun `triangle is correct for the first few`() {
         assertEquals(listOf(0, 0 + 1, 0 + 1 + 2, 0 + 1 + 2 + 3, 0 + 1 + 2 + 3 + 4), (0..4).map { triangle(it) })
     }
+
+    private fun <T : Comparable<T>> Iterable<T>.`old minAndMaxOrNull`(): Pair<T, T>? {
+        val min = this.minOrNull()
+        val max = this.maxOrNull()
+        return if (min == null || max == null) null else (min to max)
+    }
+
+    @TestFactory
+    fun `minAndMaxOrNull acts like old version (Int)`() = listOf(
+        emptyList(),
+        listOf(1, 6, 9, 2, 7, -5, 4),
+    ).flatMap { input ->
+        listOf(
+            dynamicTest("Iterator from $input") {
+                assertEquals(input.`old minAndMaxOrNull`(), input.iterator().minAndMaxOrNull())
+            },
+            dynamicTest("Iterable from $input") {
+                assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
+            },
+            dynamicTest("Sequence from $input") {
+                assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
+            }
+        )
+    }
+
+    @TestFactory
+    fun `minAndMaxOrNull acts like old version (String)`() = listOf(
+        emptyList(),
+        listOf("E", "X", "A", "M", "P", "L", "E"),
+    ).flatMap { input ->
+        listOf(
+            dynamicTest("Iterator from $input") {
+                assertEquals(input.`old minAndMaxOrNull`(), input.iterator().minAndMaxOrNull())
+            },
+            dynamicTest("Iterable from $input") {
+                assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
+            },
+            dynamicTest("Sequence from $input") {
+                assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
+            }
+        )
+    }
 }
