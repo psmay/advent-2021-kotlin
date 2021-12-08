@@ -148,6 +148,8 @@ internal class Day08Test {
         "gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce"
     ).asUseLinesSource()
 
+    private val exampleLineDecodeResults = listOf(8394, 9781, 1197, 9361, 4873, 8418, 4548, 1625, 8717, 4315)
+
     private val puzzleRawInput = getTextLineSource("y2021/Day08Input")
 
     private fun parseLine(line: String): InputUnit {
@@ -184,17 +186,29 @@ internal class Day08Test {
         }
     }
 
-    private fun part1(input: Sequence<InputUnit>): Int {
-        return 0
+    @Test
+    fun `decoder results are correct for example input`() {
+        val actual = exampleInput.map { inputUnit ->
+            val decoded = Day08.decodeMessage(inputUnit.signalPatterns, inputUnit.outputValue)
+            decoded.toInt()
+        }
+        assertEquals(exampleLineDecodeResults, actual)
     }
 
-    private fun part2(input: Sequence<InputUnit>): Int {
-        return 0
-    }
+    private fun part1(input: Sequence<InputUnit>): Int =
+        input.map { inputUnit ->
+            inputUnit.outputValue
+                .map { digit -> Day08.isSimpleDigit(digit) }
+                .count { it }
+        }.sum()
+
+    private fun part2(input: Sequence<InputUnit>): Int = input.map { inputUnit ->
+        Day08.decodeMessage(inputUnit.signalPatterns, inputUnit.outputValue).toInt()
+    }.sum()
 
     @TestFactory
     fun `part1 produces sample results as expected`() = listOf(
-        exampleRawInput to -1
+        exampleRawInput to 26
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part1(lines.map { parseLine(it) }) }
@@ -204,7 +218,7 @@ internal class Day08Test {
 
     @TestFactory
     fun `part2 produces sample results as expected`() = listOf(
-        exampleRawInput to -1
+        exampleRawInput to 61229
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part2(lines.map { parseLine(it) }) }
@@ -220,7 +234,7 @@ internal class Day08Test {
 
     @Test
     fun `part2 on puzzle input succeeds`() {
-        val result = puzzleRawInput.useLines { lines -> part1(lines.map { parseLine(it) }) }
+        val result = puzzleRawInput.useLines { lines -> part2(lines.map { parseLine(it) }) }
         println("Result: $result")
     }
 }
