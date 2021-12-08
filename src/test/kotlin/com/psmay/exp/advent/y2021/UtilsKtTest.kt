@@ -6,15 +6,18 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 internal class UtilsKtTest {
-    data class FoldIncrementallyParams<T, R>(val source: Iterable<T>, val initial: R, val operation: (R, T) -> R)
+    data class FoldIncrementallyParams<T, R>(val source: Sequence<T>, val initial: R, val operation: (R, T) -> R)
 
     private fun <T, R> FoldIncrementallyParams<T, R>.run() = this.source.foldIncrementally(this.initial, this.operation)
 
     @TestFactory
     fun `foldIncrementally works with typical inputs`() = listOf(
-        FoldIncrementallyParams(listOf(1, 1, 1, 1, 1), 0) { a, x -> a + x } to listOf(1, 2, 3, 4, 5),
-        FoldIncrementallyParams(listOf(1, -1, -1, 1, 1, 1), 0) { a, x -> a + x } to listOf(1, 0, -1, 0, 1, 2),
-        FoldIncrementallyParams(listOf("A", "B", "C"), "") { a, x -> a + x } to listOf("A", "AB", "ABC")
+        FoldIncrementallyParams(
+            sequenceOf(1, 1, 1, 1, 1), 0) { a, x -> a + x } to listOf(1, 2, 3, 4, 5),
+        FoldIncrementallyParams(
+            sequenceOf(1, -1, -1, 1, 1, 1), 0) { a, x -> a + x } to listOf(1, 0, -1, 0, 1, 2),
+        FoldIncrementallyParams(
+            sequenceOf("A", "B", "C"), "") { a, x -> a + x } to listOf("A", "AB", "ABC")
     ).map { (input, expected) ->
         dynamicTest("From " + input.source.toList() + " to " + expected) {
             assertEquals(expected, input.run().toList())
@@ -23,7 +26,7 @@ internal class UtilsKtTest {
 
     @Test
     fun `foldIncrementally result can be traversed multiple times`() {
-        val source = listOf(1, 1, 1, 1, 1)
+        val source = sequenceOf(1, 1, 1, 1, 1)
         val result = source.foldIncrementally(0) { a, x -> a + x }
         val listA = result.toList()
         val listB = result.toList()
@@ -44,7 +47,7 @@ internal class UtilsKtTest {
     ).map { (input, expected) ->
         dynamicTest("From $input to $expected") {
             @Suppress("DEPRECATION")
-            assertEquals(expected, input.pairwise().toList())
+            assertEquals(expected, input.pairwise())
         }
     }
 
@@ -58,7 +61,7 @@ internal class UtilsKtTest {
         dynamicTest("From $input to $expected") {
             val source = input.second
             val initial = input.first
-            assertEquals(expected, source.pairwise(initial).toList())
+            assertEquals(expected, source.pairwise(initial))
         }
     }
 
@@ -72,7 +75,7 @@ internal class UtilsKtTest {
             val source = input.second
             val size = input.first
             @Suppress("DEPRECATION")
-            assertEquals(expected, source.`makeshift windowed`(size).toList())
+            assertEquals(expected, source.`makeshift windowed`(size))
         }
     }
 

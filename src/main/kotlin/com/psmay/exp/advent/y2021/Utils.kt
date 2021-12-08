@@ -16,12 +16,6 @@ fun <T, R> Sequence<T>.foldIncrementally(initial: R, operation: (R, T) -> R): Se
     }
 }
 
-/**
- * Performs a fold operation one element at a time.
- */
-fun <T, R> Iterable<T>.foldIncrementally(initial: R, operation: (R, T) -> R): Iterable<R> =
-    this.asSequence().foldIncrementally(initial, operation).asIterable()
-
 fun <T> Sequence<T>.pairwise(initial: T): Sequence<Pair<T, T>> {
     val source = this
     return sequence {
@@ -34,7 +28,7 @@ fun <T> Sequence<T>.pairwise(initial: T): Sequence<Pair<T, T>> {
 }
 
 fun <T> Iterable<T>.pairwise(initial: T) =
-    this.asSequence().pairwise(initial).asIterable()
+    this.asSequence().pairwise(initial).toList()
 
 // This actually does the same thing as zipWithNext, which I didn't find out about
 // until later.
@@ -60,7 +54,7 @@ fun <T> Sequence<T>.pairwise(): Sequence<Pair<T, T>> {
 @Deprecated("Use zipWithNext() instead.", replaceWith = ReplaceWith("zipWithNext()"))
 fun <T> Iterable<T>.pairwise() =
     @Suppress("DEPRECATION")
-    this.asSequence().pairwise().asIterable()
+    this.asSequence().pairwise().toList()
 
 @Deprecated("Use builtin windowed() instead.", replaceWith = ReplaceWith("windowed()"))
 @Suppress("FunctionName")
@@ -92,7 +86,7 @@ fun <T> Sequence<T>.`makeshift windowed`(size: Int): Sequence<List<T>> {
 @Deprecated("Use builtin windowed() instead.", replaceWith = ReplaceWith("windowed()"))
 @Suppress("FunctionName", "DEPRECATION")
 fun <T> Iterable<T>.`makeshift windowed`(size: Int) =
-    this.asSequence().`makeshift windowed`(size).asIterable()
+    this.asSequence().`makeshift windowed`(size).toList()
 
 /**
  * Produces the transpose of the specified list of sequences as a sequence of lists.
@@ -111,23 +105,15 @@ fun <T> List<Sequence<T>>.transpose(): Sequence<List<T>> {
 }
 
 /**
- * Produces the transpose of the specified list of iterables as an iterable of lists.
+ * Produces the transpose of the specified iterable of iterables as a list of lists.
  *
  * If the sources are not the same length, the transpose is truncated to the shortest source.
  */
-fun <T> List<Iterable<T>>.transpose(): Iterable<List<T>> =
-    this.map { it.asSequence() }.transpose().asIterable()
+fun <T> Iterable<Iterable<T>>.transpose(): List<List<T>> =
+    this.map { it.asSequence() }.transpose().toList()
 
 /**
- * Produces the transpose of the specified list of lists as a list of lists.
- *
- * If the sources are not the same length, the transpose is truncated to the shortest source.
- */
-fun <T> List<List<T>>.transpose(): List<List<T>> =
-    this.map { it.asIterable() }.transpose().toList()
-
-/**
- * Finds the min and max of an iterable, or null if there are no elements.
+ * Finds the min and max of an iterator, or null if there are no elements.
  */
 // This implementation computes both extremes in a single pass.
 // There must be a way to do this without mutables, but it's probably not quite as easy to read.
@@ -149,7 +135,7 @@ fun <T : Comparable<T>> Iterator<T>.minAndMaxOrNull(): Pair<T, T>? {
 }
 
 /**
- * Finds the min and max of an iterable, or null if there are no elements.
+ * Finds the min and max of a sequence, or null if there are no elements.
  */
 fun <T : Comparable<T>> Iterable<T>.minAndMaxOrNull() = this.iterator().minAndMaxOrNull()
 

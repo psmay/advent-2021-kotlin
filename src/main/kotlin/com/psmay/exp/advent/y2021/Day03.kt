@@ -75,7 +75,7 @@ object Day03 {
         .toInt(2)
 
     fun part1(input: List<List<Boolean>>): Int {
-        val columns = input.toList().transpose()
+        val columns = input.transpose()
 
         val comparedCountsPerColumn = compareCountsPerColumn(columns)
 
