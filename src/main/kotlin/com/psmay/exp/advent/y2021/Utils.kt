@@ -1,6 +1,23 @@
+@file:Suppress("unused")
+
 package com.psmay.exp.advent.y2021
 
 import java.util.*
+
+// Something option-like and sequence-like that supports *OrNull() implementations and regular ones at the same time
+private data class Found<T>(val value: T)
+
+private fun <T> Found<T>?.single(): T = (this ?: throw NoSuchElementException()).value
+private fun <T> Found<T>?.single(exceptionMessage: String): T =
+    (this ?: throw NoSuchElementException(exceptionMessage)).value
+
+private fun <T> Found<T>?.listSingle() = single("List is empty.")
+private fun <T> Found<T>?.iterableSingle() = single("Collection is empty.")
+private fun <T> Found<T>?.sequenceSingle() = single("Sequence is empty.")
+private fun <T> Found<T>?.singleOrNull(): T? = this?.value
+private fun <T> Found<T>?.toList(): List<T> = if (this == null) emptyList() else listOf(value)
+private fun <T> Found<T>?.asIterable() = toList().asIterable()
+private fun <T> Found<T>?.asSequence() = toList().asSequence()
 
 /**
  * Performs a fold operation one element at a time.
@@ -23,14 +40,13 @@ fun <T> Sequence<T>.pairwise(initial: T): Sequence<Pair<T, T>> {
     return sequence {
         var previous = initial
         for (element in source) {
-            this.yield(previous to element)
+            yield(previous to element)
             previous = element
         }
     }
 }
 
-fun <T> Iterable<T>.pairwise(initial: T) =
-    this.asSequence().pairwise(initial).toList()
+fun <T> Iterable<T>.pairwise(initial: T) = asSequence().pairwise(initial).toList()
 
 // This actually does the same thing as zipWithNext, which I didn't find out about
 // until later.
@@ -46,7 +62,7 @@ fun <T> Sequence<T>.pairwise(): Sequence<Pair<T, T>> {
             if (previous == null) {
                 previous = Holder(element)
             } else {
-                this.yield(previous.item to element)
+                yield(previous.item to element)
                 previous.item = element
             }
         }
@@ -56,7 +72,7 @@ fun <T> Sequence<T>.pairwise(): Sequence<Pair<T, T>> {
 @Deprecated("Use zipWithNext() instead.", replaceWith = ReplaceWith("zipWithNext()"))
 fun <T> Iterable<T>.pairwise() =
     @Suppress("DEPRECATION")
-    this.asSequence().pairwise().toList()
+    asSequence().pairwise().toList()
 
 @Deprecated("Use builtin windowed() instead.", replaceWith = ReplaceWith("windowed()"))
 @Suppress("FunctionName")
@@ -88,7 +104,7 @@ fun <T> Sequence<T>.`makeshift windowed`(size: Int): Sequence<List<T>> {
 @Deprecated("Use builtin windowed() instead.", replaceWith = ReplaceWith("windowed()"))
 @Suppress("FunctionName", "DEPRECATION")
 fun <T> Iterable<T>.`makeshift windowed`(size: Int) =
-    this.asSequence().`makeshift windowed`(size).toList()
+    asSequence().`makeshift windowed`(size).toList()
 
 /**
  * Produces the transpose of the specified list of sequences as a sequence of lists.
@@ -96,12 +112,12 @@ fun <T> Iterable<T>.`makeshift windowed`(size: Int) =
  * If the sources are not the same length, the transpose is truncated to the shortest source.
  */
 fun <T> List<Sequence<T>>.transpose(): Sequence<List<T>> {
-    val iterators = this.map { it.iterator() }
+    val iterators = map { it.iterator() }
 
     return sequence {
         while (iterators.all { it.hasNext() }) {
             val next = iterators.map { it.next() }
-            this.yield(next)
+            yield(next)
         }
     }
 }
@@ -111,40 +127,33 @@ fun <T> List<Sequence<T>>.transpose(): Sequence<List<T>> {
  *
  * If the sources are not the same length, the transpose is truncated to the shortest source.
  */
-fun <T> Iterable<Iterable<T>>.transpose(): List<List<T>> =
-    this.map { it.asSequence() }.transpose().toList()
+fun <T> Iterable<Iterable<T>>.transpose(): List<List<T>> = map { it.asSequence() }.transpose().toList()
 
-/**
- * Finds the min and max of an iterator, or null if there are no elements.
- */
 // This implementation computes both extremes in a single pass.
-// There must be a way to do this without mutables, but it's probably not quite as easy to read.
-fun <T : Comparable<T>> Iterator<T>.minAndMaxOrNull(): Pair<T, T>? {
-    if (!this.hasNext()) {
-        return null
+private fun <T : Comparable<T>> Sequence<T>.minAndMaxAsFound() =
+    mapFirstThenFoldAsFound({ it to it }) { (min, max), x ->
+        (if (x < min) x else min) to (if (x > max) x else max)
     }
 
-    var min = this.next()
-    var max = min
-
-    while (this.hasNext()) {
-        val current = this.next()
-        if (min > current) min = current
-        if (max < current) max = current
-    }
-
-    return (min to max)
-}
+/**
+ * Finds the min and max of a sequence, or null if the sequence contains no elements.
+ */
+fun <T : Comparable<T>> Sequence<T>.minAndMaxOrNull() = minAndMaxAsFound().singleOrNull()
 
 /**
- * Finds the min and max of a sequence, or null if there are no elements.
+ * Finds the min and max of a sequence.
  */
-fun <T : Comparable<T>> Iterable<T>.minAndMaxOrNull() = this.iterator().minAndMaxOrNull()
+fun <T : Comparable<T>> Sequence<T>.minAndMax() = minAndMaxAsFound().sequenceSingle()
 
 /**
- * Finds the min and max of an iterable, or null if there are no elements.
+ * Finds the min and max of a collection, or null if the sequence contains no elements.
  */
-fun <T : Comparable<T>> Sequence<T>.minAndMaxOrNull() = this.iterator().minAndMaxOrNull()
+fun <T : Comparable<T>> Iterable<T>.minAndMaxOrNull() = asSequence().minAndMaxAsFound().singleOrNull()
+
+/**
+ * Finds the min and max of a collection.
+ */
+fun <T : Comparable<T>> Iterable<T>.minAndMax() = asSequence().minAndMaxAsFound().iterableSingle()
 
 /**
  * Finds the nth number in the triangle progression 0, 0+1, 0+1+2, 0+1+2+3, ...
@@ -154,3 +163,64 @@ fun triangle(n: Int): Int {
     require(n >= 0) { "Cannot compute for negative values." }
     return (0..n).fold(0) { a, i -> a + i }
 }
+
+// Here's one I thought of that didn't have an equivalent in the library already.
+fun <T, R> Sequence<T>.mapFirstThenRunningFold(
+    initialOperation: (T) -> R,
+    operation: (acc: R, T) -> R,
+): Sequence<R> {
+    val iterator = iterator()
+    return sequence {
+        if (iterator.hasNext()) {
+            var accumulator = initialOperation(iterator.next())
+            yield(accumulator)
+            while (iterator.hasNext()) {
+                accumulator = operation(accumulator, iterator.next())
+                yield(accumulator)
+            }
+        }
+    }
+}
+
+private fun <T, R> Sequence<T>.mapFirstThenFoldAsFound(
+    initialOperation: (T) -> R,
+    operation: (acc: R, T) -> R,
+): Found<R>? {
+    val iterator = iterator()
+    if (iterator.hasNext()) {
+        var accumulator = initialOperation(iterator.next())
+        while (iterator.hasNext()) {
+            accumulator = operation(accumulator, iterator.next())
+        }
+        return Found(accumulator)
+    }
+    return null
+}
+
+/**
+ * Applies a function to convert the first element of a sequence to an accumulator, then performs a fold on the
+ * remaining elements.
+ */
+fun <T, R> Sequence<T>.mapFirstThenFold(initialOperation: (T) -> R, operation: (acc: R, T) -> R) =
+    mapFirstThenFoldAsFound(initialOperation, operation).sequenceSingle()
+
+/**
+ * Applies a function to convert the first element of a sequence to an accumulator, then performs a fold on the
+ * remaining elements; returns null if the sequence is empty.
+ */
+fun <T, R> Sequence<T>.mapFirstThenFoldOrNull(initialOperation: (T) -> R, operation: (acc: R, T) -> R) =
+    mapFirstThenFoldAsFound(initialOperation, operation).singleOrNull()
+
+/**
+ * Applies a function to convert the first element of a collection to an accumulator, then performs a fold on the
+ * remaining elements.
+ */
+fun <T, R> Iterable<T>.mapFirstThenFold(initialOperation: (T) -> R, operation: (acc: R, T) -> R) =
+    asSequence().mapFirstThenFoldAsFound(initialOperation, operation).iterableSingle()
+
+/**
+ * Applies a function to convert the first element of a collection to an accumulator, then performs a fold on the
+ * remaining elements; returns null if the collection is empty.
+ */
+fun <T, R> Iterable<T>.mapFirstThenFoldOrNull(initialOperation: (T) -> R, operation: (acc: R, T) -> R) =
+    asSequence().mapFirstThenFoldAsFound(initialOperation, operation).singleOrNull()

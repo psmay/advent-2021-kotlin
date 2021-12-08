@@ -124,9 +124,6 @@ internal class UtilsKtTest {
         listOf(1, 6, 9, 2, 7, -5, 4),
     ).flatMap { input ->
         listOf(
-            dynamicTest("Iterator from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.iterator().minAndMaxOrNull())
-            },
             dynamicTest("Iterable from $input") {
                 assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
             },
@@ -142,9 +139,6 @@ internal class UtilsKtTest {
         listOf("E", "X", "A", "M", "P", "L", "E"),
     ).flatMap { input ->
         listOf(
-            dynamicTest("Iterator from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.iterator().minAndMaxOrNull())
-            },
             dynamicTest("Iterable from $input") {
                 assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
             },
