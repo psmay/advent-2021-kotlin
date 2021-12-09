@@ -39,7 +39,13 @@ internal class Day09Test {
     }
 
     private fun part1(input: Sequence<List<Int>>): Int {
-        return 0
+        val lowPoints = Day09
+            .getCellWindows(input)
+            .filter { it.isLowPoint() }
+
+        val riskLevels = lowPoints.map { it.height + 1 }
+
+        return riskLevels.sum()
     }
 
     private fun part2(input: Sequence<List<Int>>): Int {
