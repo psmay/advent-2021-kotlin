@@ -2,8 +2,6 @@
 
 package com.psmay.exp.advent.y2021
 
-import java.security.InvalidParameterException
-
 object Day08 {
     fun isSimpleDigit(set: Set<Char>): Boolean {
         set.ensureSegmentSetIsValid()
@@ -17,47 +15,47 @@ object Day08 {
         val bySize = convertInputToSizeMapping(input)
 
         // These four digits can be determined by size alone.
-        val setFor1 = bySize[2]?.single() ?: throw InvalidParameterException("2-segment set is missing.")
-        val setFor7 = bySize[3]?.single() ?: throw InvalidParameterException("3-segment set is missing.")
-        val setFor4 = bySize[4]?.single() ?: throw InvalidParameterException("4-segment set is missing.")
-        val setFor8 = bySize[7]?.single() ?: throw InvalidParameterException("7-segment set is missing.")
+        val setFor1 = bySize[2]?.single() ?: throw IllegalArgumentException("2-segment set is missing.")
+        val setFor7 = bySize[3]?.single() ?: throw IllegalArgumentException("3-segment set is missing.")
+        val setFor4 = bySize[4]?.single() ?: throw IllegalArgumentException("4-segment set is missing.")
+        val setFor8 = bySize[7]?.single() ?: throw IllegalArgumentException("7-segment set is missing.")
 
         // Others need some help.
         val setsFor5Segments =
-            bySize[5]?.toMutableSet() ?: throw InvalidParameterException("5-segment sets are missing.")
-        if (setsFor5Segments.size != 3) throw InvalidParameterException("Number of 5-segment sets is incorrect.")
+            bySize[5]?.toMutableSet() ?: throw IllegalArgumentException("5-segment sets are missing.")
+        if (setsFor5Segments.size != 3) throw IllegalArgumentException("Number of 5-segment sets is incorrect.")
         val setsFor6Segments =
-            bySize[6]?.toMutableSet() ?: throw InvalidParameterException("6-segment digits are missing.")
-        if (setsFor6Segments.size != 3) throw InvalidParameterException("Number of 6-segment sets is incorrect.")
+            bySize[6]?.toMutableSet() ?: throw IllegalArgumentException("6-segment digits are missing.")
+        if (setsFor6Segments.size != 3) throw IllegalArgumentException("Number of 6-segment sets is incorrect.")
 
         // Of 2, 3, and 5, only 3 includes both segments of 1.
         val setFor3 = setsFor5Segments.removeSingleOrNull { it.containsAll(setFor1) }
-            ?: throw InvalidParameterException("Provided 5-segment sets are inconsistent.")
+            ?: throw IllegalArgumentException("Provided 5-segment sets are inconsistent.")
 
         // 9 is the union of 3 and 4.
         val union3Or4 = setFor3.union(setFor4)
         val setFor9 = setsFor6Segments.removeSingleOrNull { it == union3Or4 }
-            ?: throw InvalidParameterException("Provided 6-segment sets are inconsistent.")
+            ?: throw IllegalArgumentException("Provided 6-segment sets are inconsistent.")
 
         // The bottom-left segment is the inverse of 9.
         val bottomLeft = setFor8 - setFor9
 
         // Of 2 and 3, only 2 has the bottom-left segment.
         val setFor2 = setsFor5Segments.removeSingleOrNull { it.containsAll(bottomLeft) }
-            ?: throw InvalidParameterException("Provided 5-segment sets are inconsistent.")
+            ?: throw IllegalArgumentException("Provided 5-segment sets are inconsistent.")
 
         // Only 5 remains in the 2 3 5 sets.
         val setFor5 = setsFor5Segments.removeSingleOrNull()
-            ?: throw InvalidParameterException("Provided 5-segment sets are inconsistent.")
+            ?: throw IllegalArgumentException("Provided 5-segment sets are inconsistent.")
 
         // 6 is the union of 5 with the bottom-left segment.
         val union5OrBottomLeft = setFor5.union(bottomLeft)
         val setFor6 = setsFor6Segments.removeSingleOrNull { it == union5OrBottomLeft }
-            ?: throw InvalidParameterException("Provided 6-segment sets are inconsistent.")
+            ?: throw IllegalArgumentException("Provided 6-segment sets are inconsistent.")
 
         // Only 0 remains in the 0 6 9 sets.
         val setFor0 = setsFor6Segments.removeSingleOrNull()
-            ?: throw InvalidParameterException("Provided 6-segment sets are inconsistent.")
+            ?: throw IllegalArgumentException("Provided 6-segment sets are inconsistent.")
 
         return listOf(
             setFor0 to 0,
