@@ -49,7 +49,29 @@ internal class Day09Test {
     }
 
     private fun part2(input: Sequence<List<Int>>): Int {
-        return 0
+        val heightMap = Day09.RectangularHeightMap(input.toList())
+
+        val seen = mutableSetOf<Pair<Int, Int>>()
+        val basins = mutableSetOf<Set<Pair<Int, Int>>>()
+
+        for (position in heightMap.getAllPositions()) {
+            if (!seen.contains(position)) {
+                val basin = heightMap.mapSurroundingBasin(position)
+
+                if (basin.isNotEmpty()) {
+                    basins.add(basin)
+                    seen.addAll(basin)
+                }
+            }
+        }
+
+        val largestBasinSizes = basins.map { it.size }.sortedByDescending { it }.take(3)
+
+        if (largestBasinSizes.size != 3) {
+            throw Exception("Number of basins found was ${largestBasinSizes.size}, not 3.")
+        }
+
+        return largestBasinSizes.reduce { a, b -> a * b }
     }
 
     @TestFactory
@@ -64,7 +86,7 @@ internal class Day09Test {
 
     @TestFactory
     fun `part2 produces sample results as expected`() = listOf(
-        exampleRawInput to -1
+        exampleRawInput to 1134
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part2(lines.map { parseLine(it) }) }
