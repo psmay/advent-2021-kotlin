@@ -62,7 +62,7 @@ object Day09 {
         columnIndex - 1 to rowIndex
     )
 
-    private fun Pair<Int, Int>.getAdjacentPositions() = getAdjacentPositions(this.first, this.second)
+    private fun Pair<Int, Int>.getAdjacentPositions() = getAdjacentPositions(first, second)
 
     data class RectangularHeightMap(val mapHeightRows: List<List<Int>>) {
         init {
