@@ -26,7 +26,10 @@ internal class Day10Test {
     private val puzzleRawInput = getTextLineSource("y2021/Day10Input")
 
     private fun part1(input: Sequence<String>): Int {
-        return 0
+        return input.map { Day10.doSomething(it.asSequence()) }
+            .filterIsInstance<Day10.CorruptedResult>()
+            .map { it.characterScore }
+            .sum()
     }
 
     private fun part2(input: Sequence<String>): Int {
