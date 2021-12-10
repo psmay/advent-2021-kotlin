@@ -2,10 +2,7 @@ package com.psmay.exp.advent.y2021
 
 object Day10 {
 
-    interface Queue<T> {
-        fun isEmpty(): Boolean
-        val size: Int
-
+    interface Queue<T> : Collection<T> {
         fun addLast(element: T): Boolean
         fun addLastIfRoom(element: T): Boolean
 
@@ -35,10 +32,7 @@ object Day10 {
         fun removeLastOrElse(defaultValue: () -> T): T
     }
 
-    interface Stack<T> {
-        fun isEmpty(): Boolean
-        val size: Int
-
+    interface Stack<T> : Collection<T> {
         fun addLast(element: T): Boolean
         fun addLastIfRoom(element: T): Boolean
 
@@ -57,6 +51,9 @@ object Day10 {
         private val store = mutableListOf<T>()
         override fun isEmpty() = store.isEmpty()
         override val size get() = store.size
+        override fun contains(element: T) = store.contains(element)
+        override fun containsAll(elements: Collection<T>) = store.containsAll(elements)
+        override fun iterator() = store.iterator()
 
         override fun addFirst(element: T): Boolean {
             store.add(0, element)
@@ -100,9 +97,25 @@ object Day10 {
     }
 
     data class SuccessResult(override val index: Int) : ScanningResult()
-    data class IncompleteResult(override val index: Int, val depth: Int) : ScanningResult()
+
+    data class IncompleteResult(override val index: Int, val expectedEndChars: List<Char>) :
+        ScanningResult() {
+
+        val completionScore
+            get() = expectedEndChars.fold(0L) { acc, c ->
+                val charScore = when (c) {
+                    ')' -> 1
+                    ']' -> 2
+                    '}' -> 3
+                    '>' -> 4
+                    else -> 0
+                }
+                (acc * 5) + charScore
+            }
+    }
+
     data class CorruptedResult(override val index: Int, val char: Char, val description: String) : ScanningResult() {
-        val characterScore
+        val characterScore: Long
             get() = when (char) {
                 ')' -> 3
                 ']' -> 57
@@ -161,6 +174,6 @@ object Day10 {
         return if (stack.isEmpty())
             SuccessResult(lastIndex)
         else
-            IncompleteResult(lastIndex + 1, stack.size)
+            IncompleteResult(lastIndex + 1, stack.reversed().map { it.endCharacter })
     }
 }

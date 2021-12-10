@@ -25,20 +25,29 @@ internal class Day10Test {
 
     private val puzzleRawInput = getTextLineSource("y2021/Day10Input")
 
-    private fun part1(input: Sequence<String>): Int {
+    private fun part1(input: Sequence<String>): Long {
         return input.map { Day10.doSomething(it.asSequence()) }
             .filterIsInstance<Day10.CorruptedResult>()
             .map { it.characterScore }
             .sum()
     }
 
-    private fun part2(input: Sequence<String>): Int {
-        return 0
+    private fun part2(input: Sequence<String>): Long {
+        val scores = input.map { Day10.doSomething(it.asSequence()) }
+            .filterIsInstance<Day10.IncompleteResult>()
+            .map { it.completionScore }
+            .sortedBy { it }
+            .toList()
+
+        if (scores.isEmpty()) throw Exception()
+
+        val middleIndex = scores.size / 2
+        return scores[middleIndex]
     }
 
     @TestFactory
     fun `part1 produces sample results as expected`() = listOf(
-        exampleRawInput to 26397
+        exampleRawInput to 26397L
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part1(lines) }
@@ -48,7 +57,7 @@ internal class Day10Test {
 
     @TestFactory
     fun `part2 produces sample results as expected`() = listOf(
-        exampleRawInput to -1
+        exampleRawInput to 288957L
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part2(lines) }
