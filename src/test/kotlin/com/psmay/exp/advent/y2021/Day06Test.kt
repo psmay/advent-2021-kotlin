@@ -1,6 +1,6 @@
 package com.psmay.exp.advent.y2021
 
-import com.psmay.exp.advent.helpers.getTextFile
+import com.psmay.exp.advent.y2021.tests.helpers.getTextFile
 import com.psmay.exp.advent.y2021.Day06.part1
 import com.psmay.exp.advent.y2021.Day06.part2
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -1,6 +1,6 @@
 package com.psmay.exp.advent.y2021
 
-import com.psmay.exp.advent.helpers.getTextFile
+import com.psmay.exp.advent.y2021.tests.helpers.getTextFile
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory

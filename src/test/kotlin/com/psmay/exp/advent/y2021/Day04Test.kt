@@ -1,6 +1,6 @@
 package com.psmay.exp.advent.y2021
 
-import com.psmay.exp.advent.helpers.getTextFile
+import com.psmay.exp.advent.y2021.tests.helpers.getTextFile
 import com.psmay.exp.advent.y2021.Day04.BingoBoardGrid
 import com.psmay.exp.advent.y2021.Day04.BingoBoardRow
 import com.psmay.exp.advent.y2021.Day04.BingoNumberOrder

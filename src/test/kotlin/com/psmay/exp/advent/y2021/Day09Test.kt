@@ -1,7 +1,7 @@
 package com.psmay.exp.advent.y2021
 
-import com.psmay.exp.advent.helpers.asUseLinesSource
-import com.psmay.exp.advent.helpers.getTextLineSource
+import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
+import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
