@@ -1,7 +1,8 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests.util
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.DynamicTest.dynamicTest
+import com.psmay.exp.advent.y2021.util.*
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
@@ -20,8 +21,8 @@ internal class UtilsKtTest {
         FoldIncrementallyParams(
             sequenceOf("A", "B", "C"), "") { a, x -> a + x } to listOf("A", "AB", "ABC")
     ).map { (input, expected) ->
-        dynamicTest("From " + input.source.toList() + " to " + expected) {
-            assertEquals(expected, input.run().toList())
+        DynamicTest.dynamicTest("From " + input.source.toList() + " to " + expected) {
+            Assertions.assertEquals(expected, input.run().toList())
         }
     }
 
@@ -33,9 +34,9 @@ internal class UtilsKtTest {
         val listB = result.toList()
         val xC = result.map { it + 10 }.toList()
 
-        assertEquals(listOf(1, 2, 3, 4, 5), listA)
-        assertEquals(listOf(1, 2, 3, 4, 5), listB)
-        assertEquals(listOf(11, 12, 13, 14, 15), xC)
+        Assertions.assertEquals(listOf(1, 2, 3, 4, 5), listA)
+        Assertions.assertEquals(listOf(1, 2, 3, 4, 5), listB)
+        Assertions.assertEquals(listOf(11, 12, 13, 14, 15), xC)
     }
 
     @TestFactory
@@ -46,9 +47,9 @@ internal class UtilsKtTest {
         emptyList<Int>() to emptyList(),
         listOf<Int?>(1, null, 2, null, 3) to listOf(1 to null, null to 2, 2 to null, null to 3),
     ).map { (input, expected) ->
-        dynamicTest("From $input to $expected") {
+        DynamicTest.dynamicTest("From $input to $expected") {
             @Suppress("DEPRECATION")
-            assertEquals(expected, input.pairwise())
+            (Assertions.assertEquals(expected, input.pairwise()))
         }
     }
 
@@ -59,10 +60,10 @@ internal class UtilsKtTest {
         (1 to emptyList<Int>()) to emptyList(),
         (1 to listOf(null, 2, null, 3)) to listOf(1 to null, null to 2, 2 to null, null to 3),
     ).map { (input, expected) ->
-        dynamicTest("From $input to $expected") {
+        DynamicTest.dynamicTest("From $input to $expected") {
             val source = input.second
             val initial = input.first
-            assertEquals(expected, source.pairwise(initial))
+            Assertions.assertEquals(expected, source.pairwise(initial))
         }
     }
 
@@ -72,11 +73,11 @@ internal class UtilsKtTest {
         (3 to listOf(10, 20, 30)) to listOf(listOf(10, 20, 30)),
         (3 to listOf(10, 20)) to emptyList()
     ).map { (input, expected) ->
-        dynamicTest("From $input to $expected") {
+        DynamicTest.dynamicTest("From $input to $expected") {
             val source = input.second
             val size = input.first
             @Suppress("DEPRECATION")
-            assertEquals(expected, source.`makeshift windowed`(size))
+            (Assertions.assertEquals(expected, source.`makeshift windowed`(size)))
         }
     }
 
@@ -102,14 +103,15 @@ internal class UtilsKtTest {
         transposeInput2 to transposeResult2,
         transposeInput3 to transposeResult3,
     ).map { (input, expected) ->
-        dynamicTest("From $input to $expected") {
-            assertEquals(expected, input.transpose())
+        DynamicTest.dynamicTest("From $input to $expected") {
+            Assertions.assertEquals(expected, input.transpose())
         }
     }
 
     @Test
     fun `triangle is correct for the first few`() {
-        assertEquals(listOf(0, 0 + 1, 0 + 1 + 2, 0 + 1 + 2 + 3, 0 + 1 + 2 + 3 + 4), (0..4).map { triangle(it) })
+        Assertions.assertEquals(listOf(0, 0 + 1, 0 + 1 + 2, 0 + 1 + 2 + 3, 0 + 1 + 2 + 3 + 4),
+            (0..4).map { triangle(it) })
     }
 
     private fun <T : Comparable<T>> Iterable<T>.`old minAndMaxOrNull`(): Pair<T, T>? {
@@ -124,11 +126,11 @@ internal class UtilsKtTest {
         listOf(1, 6, 9, 2, 7, -5, 4),
     ).flatMap { input ->
         listOf(
-            dynamicTest("Iterable from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
+            DynamicTest.dynamicTest("Iterable from $input") {
+                Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
             },
-            dynamicTest("Sequence from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
+            DynamicTest.dynamicTest("Sequence from $input") {
+                Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
             }
         )
     }
@@ -139,11 +141,11 @@ internal class UtilsKtTest {
         listOf("E", "X", "A", "M", "P", "L", "E"),
     ).flatMap { input ->
         listOf(
-            dynamicTest("Iterable from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
+            DynamicTest.dynamicTest("Iterable from $input") {
+                Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
             },
-            dynamicTest("Sequence from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
+            DynamicTest.dynamicTest("Sequence from $input") {
+                Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
             }
         )
     }
