@@ -1,7 +1,8 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests
 
-import com.psmay.exp.advent.helpers.getTextFile
-import org.junit.jupiter.api.Assertions.assertEquals
+import com.psmay.exp.advent.y2021.Day03
+import com.psmay.exp.advent.y2021.tests.helpers.getTextFile
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -41,7 +42,7 @@ internal class Day03Test {
         exampleInput to 198
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
-            assertEquals(expected, Day03.part1(input))
+            Assertions.assertEquals(expected, Day03.part1(input))
         }
     }
 
@@ -56,7 +57,7 @@ internal class Day03Test {
         exampleInput to 230
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
-            assertEquals(expected, Day03.part2(input))
+            Assertions.assertEquals(expected, Day03.part2(input))
         }
     }
 

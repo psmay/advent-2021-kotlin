@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.util
 
 import java.util.*
 

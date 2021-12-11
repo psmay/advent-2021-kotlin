@@ -1,11 +1,12 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests.util
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import com.psmay.exp.advent.y2021.util.*
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
-internal class UtilsKtTest {
+internal class UtilsTest {
     data class FoldIncrementallyParams<T, R>(val source: Sequence<T>, val initial: R, val operation: (R, T) -> R)
 
     private fun <T, R> FoldIncrementallyParams<T, R>.run() =
@@ -21,7 +22,7 @@ internal class UtilsKtTest {
             sequenceOf("A", "B", "C"), "") { a, x -> a + x } to listOf("A", "AB", "ABC")
     ).map { (input, expected) ->
         dynamicTest("From " + input.source.toList() + " to " + expected) {
-            assertEquals(expected, input.run().toList())
+            Assertions.assertEquals(expected, input.run().toList())
         }
     }
 
@@ -33,9 +34,9 @@ internal class UtilsKtTest {
         val listB = result.toList()
         val xC = result.map { it + 10 }.toList()
 
-        assertEquals(listOf(1, 2, 3, 4, 5), listA)
-        assertEquals(listOf(1, 2, 3, 4, 5), listB)
-        assertEquals(listOf(11, 12, 13, 14, 15), xC)
+        Assertions.assertEquals(listOf(1, 2, 3, 4, 5), listA)
+        Assertions.assertEquals(listOf(1, 2, 3, 4, 5), listB)
+        Assertions.assertEquals(listOf(11, 12, 13, 14, 15), xC)
     }
 
     @TestFactory
@@ -48,7 +49,7 @@ internal class UtilsKtTest {
     ).map { (input, expected) ->
         dynamicTest("From $input to $expected") {
             @Suppress("DEPRECATION")
-            assertEquals(expected, input.pairwise())
+            (Assertions.assertEquals(expected, input.pairwise()))
         }
     }
 
@@ -62,7 +63,7 @@ internal class UtilsKtTest {
         dynamicTest("From $input to $expected") {
             val source = input.second
             val initial = input.first
-            assertEquals(expected, source.pairwise(initial))
+            Assertions.assertEquals(expected, source.pairwise(initial))
         }
     }
 
@@ -76,7 +77,7 @@ internal class UtilsKtTest {
             val source = input.second
             val size = input.first
             @Suppress("DEPRECATION")
-            assertEquals(expected, source.`makeshift windowed`(size))
+            (Assertions.assertEquals(expected, source.`makeshift windowed`(size)))
         }
     }
 
@@ -103,13 +104,14 @@ internal class UtilsKtTest {
         transposeInput3 to transposeResult3,
     ).map { (input, expected) ->
         dynamicTest("From $input to $expected") {
-            assertEquals(expected, input.transpose())
+            Assertions.assertEquals(expected, input.transpose())
         }
     }
 
     @Test
     fun `triangle is correct for the first few`() {
-        assertEquals(listOf(0, 0 + 1, 0 + 1 + 2, 0 + 1 + 2 + 3, 0 + 1 + 2 + 3 + 4), (0..4).map { triangle(it) })
+        Assertions.assertEquals(listOf(0, 0 + 1, 0 + 1 + 2, 0 + 1 + 2 + 3, 0 + 1 + 2 + 3 + 4),
+            (0..4).map { triangle(it) })
     }
 
     private fun <T : Comparable<T>> Iterable<T>.`old minAndMaxOrNull`(): Pair<T, T>? {
@@ -125,10 +127,10 @@ internal class UtilsKtTest {
     ).flatMap { input ->
         listOf(
             dynamicTest("Iterable from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
+                Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
             },
             dynamicTest("Sequence from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
+                Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
             }
         )
     }
@@ -140,10 +142,10 @@ internal class UtilsKtTest {
     ).flatMap { input ->
         listOf(
             dynamicTest("Iterable from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
+                Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
             },
             dynamicTest("Sequence from $input") {
-                assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
+                Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
             }
         )
     }

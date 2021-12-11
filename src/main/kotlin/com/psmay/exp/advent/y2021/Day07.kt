@@ -1,5 +1,7 @@
 package com.psmay.exp.advent.y2021
 
+import com.psmay.exp.advent.y2021.util.minAndMaxOrNull
+import com.psmay.exp.advent.y2021.util.triangle
 import kotlin.math.abs
 
 object Day07 {

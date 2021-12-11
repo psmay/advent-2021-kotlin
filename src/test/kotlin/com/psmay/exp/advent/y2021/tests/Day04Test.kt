@@ -1,21 +1,15 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests
 
-import com.psmay.exp.advent.helpers.getTextFile
-import com.psmay.exp.advent.y2021.Day04.BingoBoardGrid
-import com.psmay.exp.advent.y2021.Day04.BingoBoardRow
-import com.psmay.exp.advent.y2021.Day04.BingoNumberOrder
-import com.psmay.exp.advent.y2021.Day04.parseBingoBoardRow
-import com.psmay.exp.advent.y2021.Day04.parseBingoNumberOrder
-import com.psmay.exp.advent.y2021.Day04.part1
-import com.psmay.exp.advent.y2021.Day04.part2
-import org.junit.jupiter.api.Assertions.assertEquals
+import com.psmay.exp.advent.y2021.Day04
+import com.psmay.exp.advent.y2021.tests.helpers.getTextFile
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 internal class Day04Test {
 
-    data class GameInput(val order: BingoNumberOrder, val boardGrids: List<BingoBoardGrid>)
+    data class GameInput(val order: Day04.BingoNumberOrder, val boardGrids: List<Day04.BingoBoardGrid>)
 
     private val puzzleInput = exampleLineParsing(getTextFile("y2021/Day04Input").readLines())
 
@@ -44,7 +38,7 @@ internal class Day04Test {
 
     // For testing the application code
     private val exampleInput = GameInput(
-        BingoNumberOrder(listOf(7,
+        Day04.BingoNumberOrder(listOf(7,
             4,
             9,
             5,
@@ -73,26 +67,26 @@ internal class Day04Test {
             1)),
 
         listOf(
-            BingoBoardGrid(listOf(
-                BingoBoardRow(listOf(22, 13, 17, 11, 0)),
-                BingoBoardRow(listOf(8, 2, 23, 4, 24)),
-                BingoBoardRow(listOf(21, 9, 14, 16, 7)),
-                BingoBoardRow(listOf(6, 10, 3, 18, 5)),
-                BingoBoardRow(listOf(1, 12, 20, 15, 19)),
+            Day04.BingoBoardGrid(listOf(
+                Day04.BingoBoardRow(listOf(22, 13, 17, 11, 0)),
+                Day04.BingoBoardRow(listOf(8, 2, 23, 4, 24)),
+                Day04.BingoBoardRow(listOf(21, 9, 14, 16, 7)),
+                Day04.BingoBoardRow(listOf(6, 10, 3, 18, 5)),
+                Day04.BingoBoardRow(listOf(1, 12, 20, 15, 19)),
             )),
-            BingoBoardGrid(listOf(
-                BingoBoardRow(listOf(3, 15, 0, 2, 22)),
-                BingoBoardRow(listOf(9, 18, 13, 17, 5)),
-                BingoBoardRow(listOf(19, 8, 7, 25, 23)),
-                BingoBoardRow(listOf(20, 11, 10, 24, 4)),
-                BingoBoardRow(listOf(14, 21, 16, 12, 6)),
+            Day04.BingoBoardGrid(listOf(
+                Day04.BingoBoardRow(listOf(3, 15, 0, 2, 22)),
+                Day04.BingoBoardRow(listOf(9, 18, 13, 17, 5)),
+                Day04.BingoBoardRow(listOf(19, 8, 7, 25, 23)),
+                Day04.BingoBoardRow(listOf(20, 11, 10, 24, 4)),
+                Day04.BingoBoardRow(listOf(14, 21, 16, 12, 6)),
             )),
-            BingoBoardGrid(listOf(
-                BingoBoardRow(listOf(14, 21, 17, 24, 4)),
-                BingoBoardRow(listOf(10, 16, 15, 9, 19)),
-                BingoBoardRow(listOf(18, 8, 23, 26, 20)),
-                BingoBoardRow(listOf(22, 11, 13, 6, 5)),
-                BingoBoardRow(listOf(2, 0, 12, 3, 7)),
+            Day04.BingoBoardGrid(listOf(
+                Day04.BingoBoardRow(listOf(14, 21, 17, 24, 4)),
+                Day04.BingoBoardRow(listOf(10, 16, 15, 9, 19)),
+                Day04.BingoBoardRow(listOf(18, 8, 23, 26, 20)),
+                Day04.BingoBoardRow(listOf(22, 11, 13, 6, 5)),
+                Day04.BingoBoardRow(listOf(2, 0, 12, 3, 7)),
             )))
     )
 
@@ -124,11 +118,11 @@ internal class Day04Test {
             throw IllegalArgumentException("Order line group expected 1 line, got ${orderGroup.size}.")
         }
 
-        val order = parseBingoNumberOrder(orderGroup.first())
+        val order = Day04.parseBingoNumberOrder(orderGroup.first())
 
         val boardGrids = boardGridGroups
-            .map { group -> group.map { parseBingoBoardRow(it) } }
-            .map { rows -> BingoBoardGrid(rows) }
+            .map { group -> group.map { Day04.parseBingoBoardRow(it) } }
+            .map { rows -> Day04.BingoBoardGrid(rows) }
 
         return GameInput(order, boardGrids)
     }
@@ -138,11 +132,11 @@ internal class Day04Test {
         val expected = exampleInput
         val actual = exampleLineParsing(exampleLineInput)
 
-        assertEquals(expected.order, actual.order)
+        Assertions.assertEquals(expected.order, actual.order)
 
         val expectedCells = expected.boardGrids.map { grid -> grid.rows.map { row -> row.cells } }
         val actualCells = actual.boardGrids.map { grid -> grid.rows.map { row -> row.cells } }
-        assertEquals(expectedCells, actualCells)
+        Assertions.assertEquals(expectedCells, actualCells)
     }
 
     @TestFactory
@@ -151,12 +145,12 @@ internal class Day04Test {
         exampleLineParsing(exampleLineInput) to 4512
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
-            assertEquals(expected, runPart1(input))
+            Assertions.assertEquals(expected, runPart1(input))
         }
     }
 
-    private fun runPart1(input: GameInput) = part1(input.order, input.boardGrids)
-    private fun runPart2(input: GameInput) = part2(input.order, input.boardGrids)
+    private fun runPart1(input: GameInput) = Day04.part1(input.order, input.boardGrids)
+    private fun runPart2(input: GameInput) = Day04.part2(input.order, input.boardGrids)
 
     @TestFactory
     fun `part2 produces sample results as expected`() = listOf(
@@ -164,7 +158,7 @@ internal class Day04Test {
         exampleLineParsing(exampleLineInput) to 1924
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
-            assertEquals(expected, runPart2(input))
+            Assertions.assertEquals(expected, runPart2(input))
         }
     }
 

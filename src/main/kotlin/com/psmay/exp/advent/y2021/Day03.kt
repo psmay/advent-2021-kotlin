@@ -1,5 +1,7 @@
 package com.psmay.exp.advent.y2021
 
+import com.psmay.exp.advent.y2021.util.transpose
+
 object Day03 {
 
     private fun gammaAndEpsilonBits(comparedCountsPerColumn: List<Int>): Pair<List<Boolean>, List<Boolean>> {

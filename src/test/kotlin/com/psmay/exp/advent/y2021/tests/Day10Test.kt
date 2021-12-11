@@ -1,8 +1,9 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests
 
-import com.psmay.exp.advent.helpers.asUseLinesSource
-import com.psmay.exp.advent.helpers.getTextLineSource
-import org.junit.jupiter.api.Assertions.assertEquals
+import com.psmay.exp.advent.y2021.Day10
+import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
+import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -51,7 +52,7 @@ internal class Day10Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part1(lines) }
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
@@ -61,7 +62,7 @@ internal class Day10Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part2(lines) }
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
@@ -77,6 +78,3 @@ internal class Day10Test {
         println("Result: $result")
     }
 }
-
-
-
