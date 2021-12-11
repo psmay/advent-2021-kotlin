@@ -1,8 +1,9 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests
 
+import com.psmay.exp.advent.y2021.Day09
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -34,13 +35,12 @@ internal class Day09Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> lines.map { parseLine(it) }.toList() }
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
     private fun part1(input: Sequence<List<Int>>): Int {
-        val lowPoints = Day09
-            .getCellWindows(input)
+        val lowPoints = Day09.getCellWindows(input)
             .filter { it.isLowPoint() }
 
         val riskLevels = lowPoints.map { it.height + 1 }
@@ -80,7 +80,7 @@ internal class Day09Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part1(lines.map { parseLine(it) }) }
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
@@ -90,7 +90,7 @@ internal class Day09Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part2(lines.map { parseLine(it) }) }
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
@@ -106,5 +106,3 @@ internal class Day09Test {
         println("Result: $result")
     }
 }
-
-

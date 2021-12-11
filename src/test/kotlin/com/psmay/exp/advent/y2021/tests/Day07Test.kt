@@ -1,9 +1,8 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests
 
+import com.psmay.exp.advent.y2021.Day07
 import com.psmay.exp.advent.y2021.tests.helpers.getTextFile
-import com.psmay.exp.advent.y2021.Day07.findCostInitialFormula
-import com.psmay.exp.advent.y2021.Day07.findCostNewFormula
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -21,15 +20,13 @@ internal class Day07Test {
     // exposed by the main code is more realistic.
 
     private fun part1(input: List<Int>): Int {
-        return Day07
-            .findBestItineraries(input, ::findCostInitialFormula)
+        return Day07.findBestItineraries(input, Day07::findCostInitialFormula)
             .map { it.cost }
             .first()
     }
 
     private fun part2(input: List<Int>): Int {
-        return Day07
-            .findBestItineraries(input, ::findCostNewFormula)
+        return Day07.findBestItineraries(input, Day07::findCostNewFormula)
             .map { it.cost }
             .first()
     }
@@ -40,7 +37,7 @@ internal class Day07Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = part1(input)
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
@@ -50,7 +47,7 @@ internal class Day07Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = part2(input)
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
@@ -66,4 +63,3 @@ internal class Day07Test {
         println("Result: $result")
     }
 }
-

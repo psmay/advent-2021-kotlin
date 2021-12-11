@@ -1,5 +1,6 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests
 
+import com.psmay.exp.advent.y2021.Day01
 import com.psmay.exp.advent.y2021.tests.helpers.getTextFile
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test

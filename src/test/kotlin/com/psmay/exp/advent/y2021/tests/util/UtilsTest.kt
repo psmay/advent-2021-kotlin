@@ -2,11 +2,11 @@ package com.psmay.exp.advent.y2021.tests.util
 
 import com.psmay.exp.advent.y2021.util.*
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
-internal class UtilsKtTest {
+internal class UtilsTest {
     data class FoldIncrementallyParams<T, R>(val source: Sequence<T>, val initial: R, val operation: (R, T) -> R)
 
     private fun <T, R> FoldIncrementallyParams<T, R>.run() =
@@ -21,7 +21,7 @@ internal class UtilsKtTest {
         FoldIncrementallyParams(
             sequenceOf("A", "B", "C"), "") { a, x -> a + x } to listOf("A", "AB", "ABC")
     ).map { (input, expected) ->
-        DynamicTest.dynamicTest("From " + input.source.toList() + " to " + expected) {
+        dynamicTest("From " + input.source.toList() + " to " + expected) {
             Assertions.assertEquals(expected, input.run().toList())
         }
     }
@@ -47,7 +47,7 @@ internal class UtilsKtTest {
         emptyList<Int>() to emptyList(),
         listOf<Int?>(1, null, 2, null, 3) to listOf(1 to null, null to 2, 2 to null, null to 3),
     ).map { (input, expected) ->
-        DynamicTest.dynamicTest("From $input to $expected") {
+        dynamicTest("From $input to $expected") {
             @Suppress("DEPRECATION")
             (Assertions.assertEquals(expected, input.pairwise()))
         }
@@ -60,7 +60,7 @@ internal class UtilsKtTest {
         (1 to emptyList<Int>()) to emptyList(),
         (1 to listOf(null, 2, null, 3)) to listOf(1 to null, null to 2, 2 to null, null to 3),
     ).map { (input, expected) ->
-        DynamicTest.dynamicTest("From $input to $expected") {
+        dynamicTest("From $input to $expected") {
             val source = input.second
             val initial = input.first
             Assertions.assertEquals(expected, source.pairwise(initial))
@@ -73,7 +73,7 @@ internal class UtilsKtTest {
         (3 to listOf(10, 20, 30)) to listOf(listOf(10, 20, 30)),
         (3 to listOf(10, 20)) to emptyList()
     ).map { (input, expected) ->
-        DynamicTest.dynamicTest("From $input to $expected") {
+        dynamicTest("From $input to $expected") {
             val source = input.second
             val size = input.first
             @Suppress("DEPRECATION")
@@ -103,7 +103,7 @@ internal class UtilsKtTest {
         transposeInput2 to transposeResult2,
         transposeInput3 to transposeResult3,
     ).map { (input, expected) ->
-        DynamicTest.dynamicTest("From $input to $expected") {
+        dynamicTest("From $input to $expected") {
             Assertions.assertEquals(expected, input.transpose())
         }
     }
@@ -126,10 +126,10 @@ internal class UtilsKtTest {
         listOf(1, 6, 9, 2, 7, -5, 4),
     ).flatMap { input ->
         listOf(
-            DynamicTest.dynamicTest("Iterable from $input") {
+            dynamicTest("Iterable from $input") {
                 Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
             },
-            DynamicTest.dynamicTest("Sequence from $input") {
+            dynamicTest("Sequence from $input") {
                 Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
             }
         )
@@ -141,10 +141,10 @@ internal class UtilsKtTest {
         listOf("E", "X", "A", "M", "P", "L", "E"),
     ).flatMap { input ->
         listOf(
-            DynamicTest.dynamicTest("Iterable from $input") {
+            dynamicTest("Iterable from $input") {
                 Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asIterable().minAndMaxOrNull())
             },
-            DynamicTest.dynamicTest("Sequence from $input") {
+            dynamicTest("Sequence from $input") {
                 Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
             }
         )

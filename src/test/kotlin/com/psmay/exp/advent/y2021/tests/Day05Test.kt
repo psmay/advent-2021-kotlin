@@ -1,11 +1,10 @@
-package com.psmay.exp.advent.y2021
+package com.psmay.exp.advent.y2021.tests
 
-import com.psmay.exp.advent.y2021.Day05.part1
-import com.psmay.exp.advent.y2021.Day05.part2
+import com.psmay.exp.advent.y2021.Day05
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -55,7 +54,7 @@ internal class Day05Test {
         val expected = exampleInput.toList()
         val actual = exampleLineInput.useLines { lines -> lines.map { exampleParseLine(it) }.toList() }
 
-        assertEquals(expected, actual)
+        Assertions.assertEquals(expected, actual)
     }
 
     @TestFactory
@@ -64,7 +63,7 @@ internal class Day05Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = runPart1OnLines(input)
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
@@ -74,7 +73,7 @@ internal class Day05Test {
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = runPart2OnLines(input)
-            assertEquals(expected, result)
+            Assertions.assertEquals(expected, result)
         }
     }
 
@@ -93,8 +92,8 @@ internal class Day05Test {
     }
 
     private fun runPart1OnLines(input: UseLinesSource) =
-        input.useLines { lines -> part1(lines.map { exampleParseLine(it) }) }
+        input.useLines { lines -> Day05.part1(lines.map { exampleParseLine(it) }) }
 
     private fun runPart2OnLines(input: UseLinesSource) =
-        input.useLines { lines -> part2(lines.map { exampleParseLine(it) }) }
+        input.useLines { lines -> Day05.part2(lines.map { exampleParseLine(it) }) }
 }
