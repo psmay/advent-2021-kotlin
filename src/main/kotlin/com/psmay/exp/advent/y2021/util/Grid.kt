@@ -14,6 +14,7 @@ data class Grid<T>(val rows: List<List<T>>) {
 
     val width get() = if (rows.isEmpty()) 0 else rows[0].size
     val height get() = rows.size
+    val size get() = width * height
 
     val rowIndices get() = rows.indices
     val columnIndices get() = 0 until width

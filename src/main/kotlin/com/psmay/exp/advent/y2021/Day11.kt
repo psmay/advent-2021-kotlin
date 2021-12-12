@@ -43,9 +43,16 @@ object Day11 {
         return StepResult(flashResetGrid, flashCount)
     }
 
-    fun run(grid: Grid<Int>, count: Int): Sequence<StepResult> {
+    fun run(grid: Grid<Int>, count: Int) = run(grid).take(count + 1)
+
+    // It would surprise me if there weren't a more idiomatic way to do this.
+    private fun <X> X.repeatedForever(): Sequence<X> {
+        val item = this
+        return sequence { while (true) yield(item) }
+    }
+
+    fun run(grid: Grid<Int>): Sequence<StepResult> {
         val initial = StepResult(grid, 0)
-        val stepIndexSequence = (0 until count).asSequence()
-        return stepIndexSequence.runningFold(initial) { (grid, _), _ -> step(grid) }
+        return true.repeatedForever().runningFold(initial) { (grid, _), _ -> step(grid) }
     }
 }

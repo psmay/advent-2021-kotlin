@@ -52,12 +52,21 @@ internal class Day11Test {
 
     private fun part1(input: Sequence<List<Int>>): Int {
         val inputGrid = input.asIterable().toGrid()
+
         val steps = Day11.run(inputGrid, 100)
         return steps.map { it.flashCount }.sum()
     }
 
     private fun part2(input: Sequence<List<Int>>): Int {
-        return 0
+        val inputGrid = input.asIterable().toGrid()
+        val size = inputGrid.size
+
+        val firstWhereAllFlash = Day11.run(inputGrid)
+            .mapIndexed { index, it -> index to it }
+            .first { (_, it) -> it.flashCount == size }
+
+        val (index, _) = firstWhereAllFlash
+        return index
     }
 
     @TestFactory
@@ -72,7 +81,7 @@ internal class Day11Test {
 
     @TestFactory
     fun `part2 produces sample results as expected`() = listOf(
-        exampleRawInput to -1
+        exampleRawInput to 195
     ).map { (input, expected) ->
         dynamicTest("$input to $expected") {
             val result = input.useLines { lines -> part2(lines.map { parseLine(it) }) }
