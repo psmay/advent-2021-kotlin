@@ -1,7 +1,9 @@
 package com.psmay.exp.advent.y2021.tests
 
+import com.psmay.exp.advent.y2021.Day11
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
+import com.psmay.exp.advent.y2021.util.toGrid
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
@@ -49,7 +51,9 @@ internal class Day11Test {
     }
 
     private fun part1(input: Sequence<List<Int>>): Int {
-        return 0
+        val inputGrid = input.asIterable().toGrid()
+        val steps = Day11.run(inputGrid, 100)
+        return steps.map { it.flashCount }.sum()
     }
 
     private fun part2(input: Sequence<List<Int>>): Int {
