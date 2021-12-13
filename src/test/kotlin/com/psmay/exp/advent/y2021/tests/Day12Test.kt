@@ -108,9 +108,9 @@ internal class Day12Test {
     )
 
     private val testCases = listOf(
-        TestCase(exampleRawInput1, exampleInput1, 10, -1),
-        TestCase(exampleRawInput2, exampleInput2, 19, -1),
-        TestCase(exampleRawInput3, exampleInput3, 226, -1),
+        TestCase(exampleRawInput1, exampleInput1, 10, 36),
+        TestCase(exampleRawInput2, exampleInput2, 19, 103),
+        TestCase(exampleRawInput3, exampleInput3, 226, 3509),
     )
 
     private val puzzleRawInput = getTextLineSource("y2021/Day12Input")
@@ -138,7 +138,9 @@ internal class Day12Test {
     }
 
     private fun part2(input: Sequence<Pair<CaveNode, CaveNode>>): Int {
-        return 0
+        val caveSystem = CaveSystem(input)
+        val pathsToEnd = caveSystem.traverseStartToEndUsingNewLogic()
+        return pathsToEnd.size
     }
 
     @TestFactory

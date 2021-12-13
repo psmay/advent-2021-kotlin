@@ -53,10 +53,12 @@ object Day12 {
         private fun availableExitsUsingNewLogic(path: List<CaveNode>): Set<CaveNode> {
             val head = path.last()
 
+            val allPossibleExits = graph[head] ?: emptySet()
+
             val pathSmallNodes = path.filter { it.isSmall }
             val visitedSmallNodes = pathSmallNodes.toHashSet().asSet()
 
-            val avoid = if (pathSmallNodes.size > visitedSmallNodes.size) {
+            val smallNodesToAvoid = if (pathSmallNodes.size > visitedSmallNodes.size) {
                 // At least one small node was visited twice
                 visitedSmallNodes
             } else {
@@ -64,8 +66,10 @@ object Day12 {
                 emptySet()
             }
 
-            val exits = graph[head] ?: emptySet()
-            return exits - avoid
+            // In this version, revisiting the start node is not allowed ever.
+            val avoid = smallNodesToAvoid + startNode
+
+            return allPossibleExits - avoid
         }
 
         private tailrec fun traversePathsToEnd(
