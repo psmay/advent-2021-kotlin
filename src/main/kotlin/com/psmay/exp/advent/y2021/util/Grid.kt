@@ -53,3 +53,27 @@ data class Grid<T>(val rows: List<List<T>>) {
 fun <T> List<List<T>>.toGrid() = Grid(this)
 
 fun <T> Iterable<Iterable<T>>.toGrid() = Grid(this.map { it.toList() })
+
+fun Set<Pair<Int, Int>>.plotToGrid(): Grid<Boolean> {
+    val set = this
+
+    return if (set.isEmpty()) {
+        Grid(emptyList())
+    } else {
+        val (minX, maxX) = set.map { (x, _) -> x }.minAndMax()
+        val (minY, maxY) = set.map { (_, y) -> y }.minAndMax()
+        if (minX < 0 || minY < 0) throw IndexOutOfBoundsException("Negative points cannot be plotted.")
+
+        val rows = (0..maxY).map { rowIndex ->
+            (0..maxX).map { columnIndex -> set.contains(columnIndex to rowIndex) }
+        }
+
+        Grid(rows)
+    }
+}
+
+fun Grid<Boolean>.plotToStrings(forFalse: String = ".", forTrue: String = "#"): List<String> {
+    return rows.map { row ->
+        row.joinToString("") { if (it) forTrue else forFalse }
+    }
+}
