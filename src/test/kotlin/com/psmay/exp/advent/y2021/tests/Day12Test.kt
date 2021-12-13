@@ -101,8 +101,8 @@ internal class Day12Test {
     ).asUseLinesSource()
 
     data class TestCase(
-        val exampleInput: UseLinesSource,
-        val exampleRawInput: Sequence<Pair<CaveNode, CaveNode>>,
+        val exampleRawInput: UseLinesSource,
+        val exampleInput: Sequence<Pair<CaveNode, CaveNode>>,
         val part1Result: Int,
         val part2Result: Int,
     )
