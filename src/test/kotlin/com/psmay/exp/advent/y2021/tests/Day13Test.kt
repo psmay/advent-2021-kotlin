@@ -1,5 +1,6 @@
 package com.psmay.exp.advent.y2021.tests
 
+import com.psmay.exp.advent.y2021.Day13.DotFieldInstruction
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
@@ -9,11 +10,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 internal class Day13Test {
-    sealed class InputFoldInstruction {}
-    data class AlongXInputFoldInstruction(val x: Int) : InputFoldInstruction()
-    data class AlongYInputFoldInstruction(val y: Int) : InputFoldInstruction()
 
-    data class TestInput(val points: List<Pair<Int, Int>>, val folds: List<InputFoldInstruction>)
+    data class TestInput(val points: List<Pair<Int, Int>>, val folds: List<DotFieldInstruction>)
 
     private val exampleInput1 = TestInput(
         listOf(
@@ -37,8 +35,8 @@ internal class Day13Test {
             9 to 0,
         ),
         listOf(
-            AlongYInputFoldInstruction(7),
-            AlongXInputFoldInstruction(5)
+            DotFieldInstruction.FoldThroughRow(7),
+            DotFieldInstruction.FoldThroughColumn(5)
         )
     )
 
@@ -103,14 +101,14 @@ internal class Day13Test {
             yieldAll(flush())
         }
 
-    private fun parseFold(line: String): InputFoldInstruction {
+    private fun parseFold(line: String): DotFieldInstruction {
         val regex = """^fold along (\w)=(-?\d+)$""".toRegex()
         val (variable, value) = regex.matchEntire(line)?.destructured
             ?: throw IllegalArgumentException("Fold '$line' is in unexpected format.")
 
         return when (variable) {
-            "x" -> AlongXInputFoldInstruction(value.toInt())
-            "y" -> AlongYInputFoldInstruction(value.toInt())
+            "x" -> DotFieldInstruction.FoldThroughColumn(value.toInt())
+            "y" -> DotFieldInstruction.FoldThroughRow(value.toInt())
             else -> throw IllegalArgumentException("Unknown axis '$variable'.")
         }
     }
