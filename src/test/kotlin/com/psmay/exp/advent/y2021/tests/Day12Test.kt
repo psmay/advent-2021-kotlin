@@ -133,7 +133,7 @@ internal class Day12Test {
 
     private fun part1(input: Sequence<Pair<CaveNode, CaveNode>>): Int {
         val caveSystem = CaveSystem(input)
-        val pathsToEnd = caveSystem.traverseStartToEnd()
+        val pathsToEnd = caveSystem.traverseStartToEndUsingInitialLogic()
         return pathsToEnd.size
     }
 

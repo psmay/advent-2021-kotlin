@@ -2,6 +2,8 @@
 
 package com.psmay.exp.advent.y2021
 
+import com.psmay.exp.advent.y2021.util.asSet
+
 object Day12 {
     data class CaveNode(val name: String, val isSmall: Boolean) {
         override fun toString() = "<$name>"
@@ -20,7 +22,7 @@ object Day12 {
 
     class CaveSystem {
 
-        private var graph: Map<CaveNode, HashSet<CaveNode>>
+        private var graph: Map<CaveNode, Set<CaveNode>>
 
         constructor(bidirectionalSegments: Sequence<Pair<CaveNode, CaveNode>>) {
             graph = bidirectionalSegments
@@ -40,20 +42,38 @@ object Day12 {
         constructor(bidirectionalSegments: Iterable<Pair<CaveNode, CaveNode>>)
                 : this(bidirectionalSegments.asSequence())
 
-        fun extendPathByOne(path: List<CaveNode>): List<List<CaveNode>> {
-            val nextNodes = run {
-                val head = path.last()
-                val visited = path.toHashSet()
-                val avoid = visited.filter { it.isSmall }.toHashSet()
-                val exits = graph[head] ?: emptySet()
-                val availableExits = exits - avoid
-                availableExits.sortedBy { it.name }
-            }
-            return nextNodes.map { path + it }
+        private fun availableExitsUsingInitialLogic(path: List<CaveNode>): Set<CaveNode> {
+            val head = path.last()
+            val visited = path.toHashSet().asSet()
+            val avoid = visited.filter { it.isSmall }.toHashSet().asSet()
+            val exits = graph[head] ?: emptySet()
+            return exits - avoid
         }
 
-        tailrec fun traversePathsToEnd(paths: List<List<CaveNode>>): List<List<CaveNode>> =
-            if (paths.all { it.last() == endNode }) {
+        private fun availableExitsUsingNewLogic(path: List<CaveNode>): Set<CaveNode> {
+            val head = path.last()
+
+            val pathSmallNodes = path.filter { it.isSmall }
+            val visitedSmallNodes = pathSmallNodes.toHashSet().asSet()
+
+            val avoid = if (pathSmallNodes.size > visitedSmallNodes.size) {
+                // At least one small node was visited twice
+                visitedSmallNodes
+            } else {
+                // No small nodes are off limits yet
+                emptySet()
+            }
+
+            val exits = graph[head] ?: emptySet()
+            return exits - avoid
+        }
+
+        private tailrec fun traversePathsToEnd(
+            paths: List<List<CaveNode>>,
+            getExits: (List<CaveNode>) -> Set<CaveNode>,
+        ): List<List<CaveNode>> {
+
+            return if (paths.all { it.last() == endNode }) {
                 paths
             } else {
                 traversePathsToEnd(
@@ -61,13 +81,21 @@ object Day12 {
                         if (path.last() == endNode) {
                             listOf(path)
                         } else {
-                            extendPathByOne(path)
+                            getExits(path).sortedBy { it.name }.map { path + it }
                         }
-                    })
+                    }, getExits)
             }
+        }
 
-        fun traverseStartToEnd(): List<List<CaveNode>> =
-            traversePathsToEnd(listOf(listOf(startNode)))
+        private fun traverseStartToEnd(getExits: (List<CaveNode>) -> Set<CaveNode>): List<List<CaveNode>> {
+            return traversePathsToEnd(listOf(listOf(startNode))) { getExits(it) }
+        }
+
+        fun traverseStartToEndUsingInitialLogic(): List<List<CaveNode>> =
+            traverseStartToEnd { availableExitsUsingInitialLogic(it) }
+
+        fun traverseStartToEndUsingNewLogic(): List<List<CaveNode>> =
+            traverseStartToEnd { availableExitsUsingNewLogic(it) }
     }
 
     // FIXME: Should be ^[[:upper:]]+$ and ^[[:lower:]]+$, but it was recognizing "h" as neither upper nor lower
