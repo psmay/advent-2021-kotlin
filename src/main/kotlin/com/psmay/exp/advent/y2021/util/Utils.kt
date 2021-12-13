@@ -224,3 +224,17 @@ fun <T, R> Iterable<T>.mapFirstThenFold(initialOperation: (T) -> R, operation: (
  */
 fun <T, R> Iterable<T>.mapFirstThenFoldOrNull(initialOperation: (T) -> R, operation: (acc: R, T) -> R) =
     asSequence().mapFirstThenFoldAsFound(initialOperation, operation).singleOrNull()
+
+/**
+ * Returns an object that implements Set as its implemented Set type.
+ */
+fun <T> Set<T>.asSet(): Set<T> = this
+
+/**
+ * Returns an infinitely long sequence in which every element is this.
+ */
+// It would surprise me if there weren't a more idiomatic way to do this.
+fun <X> X.repeatedForever(): Sequence<X> {
+    val item = this
+    return sequence { while (true) yield(item) }
+}

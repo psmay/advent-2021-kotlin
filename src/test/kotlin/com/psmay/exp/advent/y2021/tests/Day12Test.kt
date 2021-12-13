@@ -1,5 +1,8 @@
 package com.psmay.exp.advent.y2021.tests
 
+import com.psmay.exp.advent.y2021.Day12.CaveNode
+import com.psmay.exp.advent.y2021.Day12.CaveSystem
+import com.psmay.exp.advent.y2021.Day12.toCaveNode
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
@@ -17,7 +20,7 @@ internal class Day12Test {
         "b" to "d",
         "A" to "end",
         "b" to "end",
-    )
+    ).map { (a, b) -> a.toCaveNode() to b.toCaveNode() }
 
     private val exampleInput2 = sequenceOf(
         "dc" to "end",
@@ -30,7 +33,7 @@ internal class Day12Test {
         "kj" to "sa",
         "kj" to "HN",
         "kj" to "dc",
-    )
+    ).map { (a, b) -> a.toCaveNode() to b.toCaveNode() }
 
     private val exampleInput3 = sequenceOf(
         "fs" to "end",
@@ -51,7 +54,7 @@ internal class Day12Test {
         "zg" to "he",
         "pj" to "fs",
         "start" to "RW",
-    )
+    ).map { (a, b) -> a.toCaveNode() to b.toCaveNode() }
 
     private val exampleRawInput1 = sequenceOf(
         "start-A",
@@ -99,7 +102,7 @@ internal class Day12Test {
 
     data class TestCase(
         val exampleInput: UseLinesSource,
-        val exampleRawInput: Sequence<Pair<String, String>>,
+        val exampleRawInput: Sequence<Pair<CaveNode, CaveNode>>,
         val part1Result: Int,
         val part2Result: Int,
     )
@@ -112,11 +115,11 @@ internal class Day12Test {
 
     private val puzzleRawInput = getTextLineSource("y2021/Day12Input")
 
-    private fun parseLine(line: String): Pair<String, String> {
+    private fun parseLine(line: String): Pair<CaveNode, CaveNode> {
         val parts = line.split("-", limit = 3)
         if (parts.size != 2) throw IllegalArgumentException("Edge description must have 2 parts separated by '-'.")
         val (a, b) = parts
-        return a to b
+        return a.toCaveNode() to b.toCaveNode()
     }
 
     @TestFactory
@@ -128,11 +131,13 @@ internal class Day12Test {
         }
     }
 
-    private fun part1(input: Sequence<Pair<String, String>>): Int {
-        return 0
+    private fun part1(input: Sequence<Pair<CaveNode, CaveNode>>): Int {
+        val caveSystem = CaveSystem(input)
+        val pathsToEnd = caveSystem.traverseStartToEnd()
+        return pathsToEnd.size
     }
 
-    private fun part2(input: Sequence<Pair<String, String>>): Int {
+    private fun part2(input: Sequence<Pair<CaveNode, CaveNode>>): Int {
         return 0
     }
 
