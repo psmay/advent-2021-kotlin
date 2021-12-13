@@ -2,6 +2,7 @@ package com.psmay.exp.advent.y2021
 
 import com.psmay.exp.advent.y2021.util.Grid
 import com.psmay.exp.advent.y2021.util.adjacentCells
+import com.psmay.exp.advent.y2021.util.repeatedForever
 
 object Day11 {
     data class StepResult(val grid: Grid<Int>, val flashCount: Int)
@@ -44,12 +45,6 @@ object Day11 {
     }
 
     fun run(grid: Grid<Int>, count: Int) = run(grid).take(count + 1)
-
-    // It would surprise me if there weren't a more idiomatic way to do this.
-    private fun <X> X.repeatedForever(): Sequence<X> {
-        val item = this
-        return sequence { while (true) yield(item) }
-    }
 
     fun run(grid: Grid<Int>): Sequence<StepResult> {
         val initial = StepResult(grid, 0)
