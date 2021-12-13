@@ -4,6 +4,8 @@ import com.psmay.exp.advent.y2021.Day13.DotFieldInstruction
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
+import com.psmay.exp.advent.y2021.util.plotToGrid
+import com.psmay.exp.advent.y2021.util.plotToStrings
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
@@ -68,11 +70,29 @@ internal class Day13Test {
         val exampleRawInput: UseLinesSource,
         val exampleInput: TestInput,
         val part1Result: Int,
-        val part2Result: Int,
+        val part2Result: Set<Pair<Int, Int>>,
     )
 
     private val testCases = listOf(
-        TestCase(exampleRawInput1, exampleInput1, 17, -1),
+        TestCase(exampleRawInput1, exampleInput1, 17,
+            // These points correspond to the drawn square in the example result.
+            setOf(
+                (0 to 0),
+                (0 to 1),
+                (0 to 2),
+                (0 to 3),
+                (0 to 4),
+                (1 to 0),
+                (1 to 4),
+                (2 to 0),
+                (2 to 4),
+                (3 to 0),
+                (3 to 4),
+                (4 to 0),
+                (4 to 1),
+                (4 to 2),
+                (4 to 3),
+                (4 to 4))),
     )
 
     private val puzzleRawInput = getTextLineSource("y2021/Day13Input")
@@ -160,8 +180,11 @@ internal class Day13Test {
         return final.size
     }
 
-    private fun part2(input: TestInput): Int {
-        return 0
+    private fun part2(input: TestInput): Set<Pair<Int, Int>> {
+        val dots = input.dots.toSet()
+        val instructions = input.instructions
+
+        return instructions.fold(dots) { acc, it -> it.apply(acc) }
     }
 
     @TestFactory
@@ -190,6 +213,11 @@ internal class Day13Test {
     fun `part2 on puzzle input succeeds`() {
         val result = puzzleRawInput.useLines { lines -> part2(parseAll(lines)) }
         println("Result: $result")
+        println("Result visualized:")
+        for (stringRow in result.plotToGrid().plotToStrings()) {
+            println(stringRow)
+        }
+        println("--")
     }
 }
 
