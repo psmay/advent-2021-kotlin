@@ -11,7 +11,7 @@ import org.junit.jupiter.api.TestFactory
 
 internal class Day13Test {
 
-    data class TestInput(val points: List<Pair<Int, Int>>, val folds: List<DotFieldInstruction>)
+    data class TestInput(val dots: List<Pair<Int, Int>>, val instructions: List<DotFieldInstruction>)
 
     private val exampleInput1 = TestInput(
         listOf(
@@ -153,7 +153,11 @@ internal class Day13Test {
     }
 
     private fun part1(input: TestInput): Int {
-        return 0
+        val dots = input.dots.toSet()
+        val instructions = input.instructions.take(1) // Part 1 calls for using only first instruction
+
+        val final = instructions.fold(dots) { acc, it -> it.apply(acc) }
+        return final.size
     }
 
     private fun part2(input: TestInput): Int {
