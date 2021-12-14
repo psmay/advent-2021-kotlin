@@ -16,4 +16,38 @@ object Day14 {
 
     infix fun Pair<String, String>.yields(result: String) =
         FormulaPairInsertionRule(this.toElements(), result.toElement())
+
+    fun Iterable<FormulaPairInsertionRule>.toMap() = associateBy({ it.pair }, { it.result })
+
+    private sealed class ProcessingPiece {}
+    private data class ElementPiece(val element: FormulaElement) : ProcessingPiece()
+    private data class InterPiece(val elements: Pair<FormulaElement, FormulaElement>) : ProcessingPiece()
+
+    private fun interleaved(elements: Sequence<FormulaElement>) = elements
+        .windowed(2, partialWindows = true)
+        .flatMap {
+            if (it.size == 2) {
+                val (before, after) = it
+                listOf(ElementPiece(before), InterPiece(before to after))
+            } else {
+                val (last) = it
+                listOf(ElementPiece(last))
+            }
+        }
+
+    private fun FormulaElement?.asOptionalList() = if (this == null) emptyList() else listOf(this)
+
+    fun Sequence<FormulaElement>.expanded(rules: Map<Pair<FormulaElement, FormulaElement>, FormulaElement>) =
+        interleaved(this).flatMap {
+            when (it) {
+                is ElementPiece -> listOf(it.element)
+                is InterPiece -> rules[it.elements].asOptionalList()
+            }
+        }
+
+    fun Iterable<FormulaElement>.expanded(rules: Map<Pair<FormulaElement, FormulaElement>, FormulaElement>) =
+        this.asSequence().expanded(rules).toList()
+
+    fun Sequence<FormulaElement>.getElementCounts() = this.groupingBy { it }.eachCount()
+    fun Iterable<FormulaElement>.getElementCounts() = this.asSequence().getElementCounts()
 }

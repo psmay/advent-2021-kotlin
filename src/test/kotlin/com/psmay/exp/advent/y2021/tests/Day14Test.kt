@@ -2,6 +2,9 @@ package com.psmay.exp.advent.y2021.tests
 
 import com.psmay.exp.advent.y2021.Day14.FormulaElement
 import com.psmay.exp.advent.y2021.Day14.FormulaPairInsertionRule
+import com.psmay.exp.advent.y2021.Day14.expanded
+import com.psmay.exp.advent.y2021.Day14.getElementCounts
+import com.psmay.exp.advent.y2021.Day14.toMap
 import com.psmay.exp.advent.y2021.Day14.yields
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
@@ -117,7 +120,17 @@ internal class Day14Test {
     }
 
     private fun part1(input: TestInput): Int {
-        return 0
+        val rulesMap = input.rules.toMap()
+
+        val template = input.polymerTemplate
+
+        val result = (1..10).fold(template) { it, _ -> it.expanded(rulesMap) }
+
+        val counts = result.getElementCounts().entries.sortedBy { it.value }
+        val (_, lowestCount) = counts.first()
+        val (_, highestCount) = counts.last()
+
+        return highestCount - lowestCount
     }
 
     private fun part2(input: TestInput): Int {
