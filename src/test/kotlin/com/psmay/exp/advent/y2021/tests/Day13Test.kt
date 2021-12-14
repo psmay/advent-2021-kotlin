@@ -4,6 +4,7 @@ import com.psmay.exp.advent.y2021.Day13.DotFieldInstruction
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
+import com.psmay.exp.advent.y2021.tests.helpers.splitAtEmptyLines
 import com.psmay.exp.advent.y2021.util.plotToGrid
 import com.psmay.exp.advent.y2021.util.plotToStrings
 import org.junit.jupiter.api.Assertions
@@ -97,29 +98,7 @@ internal class Day13Test {
 
     private val puzzleRawInput = getTextLineSource("y2021/Day13Input")
 
-    // Another swing at something we tried in Day04.
-    private fun readAsChunks(lines: Sequence<String>): Sequence<List<String>> =
-        sequence {
-            val buffer = mutableListOf<String>()
 
-            fun flush(): List<List<String>> =
-                if (buffer.isNotEmpty()) {
-                    val thisChunk = buffer.toList()
-                    buffer.clear()
-                    listOf(thisChunk)
-                } else {
-                    emptyList()
-                }
-
-            for (line in lines) {
-                if (line.isEmpty()) {
-                    yieldAll(flush())
-                } else {
-                    buffer.add(line)
-                }
-            }
-            yieldAll(flush())
-        }
 
     private fun parseFold(line: String): DotFieldInstruction {
         val regex = """^fold along (\w)=(-?\d+)$""".toRegex()
@@ -141,7 +120,7 @@ internal class Day13Test {
     }
 
     private fun parseAll(lines: Sequence<String>): TestInput {
-        val chunks = readAsChunks(lines)
+        val chunks = lines.splitAtEmptyLines()
 
         val iterator = chunks.iterator()
 

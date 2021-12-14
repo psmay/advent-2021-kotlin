@@ -38,3 +38,29 @@ fun Iterable<String>.asUseLinesSource(): UseLinesSource {
         override fun <T> useLines(block: (Sequence<String>) -> T): T = block(iterable.asSequence())
     }
 }
+
+fun Sequence<String>.splitAtEmptyLines(keepEmptyGroups: Boolean = false): Sequence<List<String>> {
+    val lines = this
+
+    return sequence {
+        val buffer = mutableListOf<String>()
+
+        fun flush(): List<List<String>> =
+            if (keepEmptyGroups || buffer.isNotEmpty()) {
+                val block = buffer.toList()
+                buffer.clear()
+                listOf(block)
+            } else {
+                emptyList()
+            }
+
+        for (line in lines) {
+            if (line.isEmpty()) {
+                yieldAll(flush())
+            } else {
+                buffer.add(line)
+            }
+        }
+        yieldAll(flush())
+    }
+}
