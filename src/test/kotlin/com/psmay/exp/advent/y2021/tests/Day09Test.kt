@@ -1,8 +1,10 @@
 package com.psmay.exp.advent.y2021.tests
 
 import com.psmay.exp.advent.y2021.Day09
+import com.psmay.exp.advent.y2021.Day09.mapSurroundingBasin
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
+import com.psmay.exp.advent.y2021.util.Grid
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
@@ -49,12 +51,12 @@ internal class Day09Test {
     }
 
     private fun part2(input: Sequence<List<Int>>): Int {
-        val heightMap = Day09.RectangularHeightMap(input.toList())
+        val heightMap = Grid(input.toList())
 
         val seen = mutableSetOf<Pair<Int, Int>>()
         val basins = mutableSetOf<Set<Pair<Int, Int>>>()
 
-        for (position in heightMap.getAllPositions()) {
+        for (position in heightMap.allPositions) {
             if (!seen.contains(position)) {
                 val basin = heightMap.mapSurroundingBasin(position)
 
