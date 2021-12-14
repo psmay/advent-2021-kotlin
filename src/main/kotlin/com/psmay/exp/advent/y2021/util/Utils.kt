@@ -158,7 +158,12 @@ fun <T> Set<T>.asSet(): Set<T> = this
  * Returns an infinitely long sequence in which every element is this.
  */
 // It would surprise me if there weren't a more idiomatic way to do this.
-fun <X> X.repeatedForever(): Sequence<X> {
+fun <T> T.repeatedForever(): Sequence<T> {
     val item = this
     return sequence { while (true) yield(item) }
 }
+
+/**
+ * Returns an infinitely long sequence in which every element is Unit.
+ */
+fun repeatedForever() = Unit.repeatedForever()
