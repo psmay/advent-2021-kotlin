@@ -48,6 +48,6 @@ object Day11 {
 
     fun run(grid: Grid<Int>): Sequence<StepResult> {
         val initial = StepResult(grid, 0)
-        return true.repeatedForever().runningFold(initial) { (grid, _), _ -> step(grid) }
+        return repeatedForever().runningFold(initial) { (grid, _), _ -> step(grid) }
     }
 }

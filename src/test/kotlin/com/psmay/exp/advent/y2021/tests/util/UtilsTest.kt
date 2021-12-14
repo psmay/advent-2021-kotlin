@@ -1,57 +1,15 @@
 package com.psmay.exp.advent.y2021.tests.util
 
-import com.psmay.exp.advent.y2021.util.*
+import com.psmay.exp.advent.y2021.util.minAndMaxOrNull
+import com.psmay.exp.advent.y2021.util.pairwise
+import com.psmay.exp.advent.y2021.util.transpose
+import com.psmay.exp.advent.y2021.util.triangle
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 
 internal class UtilsTest {
-    data class FoldIncrementallyParams<T, R>(val source: Sequence<T>, val initial: R, val operation: (R, T) -> R)
-
-    private fun <T, R> FoldIncrementallyParams<T, R>.run() =
-        @Suppress("DEPRECATION") this.source.foldIncrementally(this.initial, this.operation)
-
-    @TestFactory
-    fun `foldIncrementally works with typical inputs`() = listOf(
-        FoldIncrementallyParams(
-            sequenceOf(1, 1, 1, 1, 1), 0) { a, x -> a + x } to listOf(1, 2, 3, 4, 5),
-        FoldIncrementallyParams(
-            sequenceOf(1, -1, -1, 1, 1, 1), 0) { a, x -> a + x } to listOf(1, 0, -1, 0, 1, 2),
-        FoldIncrementallyParams(
-            sequenceOf("A", "B", "C"), "") { a, x -> a + x } to listOf("A", "AB", "ABC")
-    ).map { (input, expected) ->
-        dynamicTest("From " + input.source.toList() + " to " + expected) {
-            Assertions.assertEquals(expected, input.run().toList())
-        }
-    }
-
-    @Test
-    fun `foldIncrementally result can be traversed multiple times`() {
-        val source = sequenceOf(1, 1, 1, 1, 1)
-        val result = @Suppress("DEPRECATION") source.foldIncrementally(0) { a, x -> a + x }
-        val listA = result.toList()
-        val listB = result.toList()
-        val xC = result.map { it + 10 }.toList()
-
-        Assertions.assertEquals(listOf(1, 2, 3, 4, 5), listA)
-        Assertions.assertEquals(listOf(1, 2, 3, 4, 5), listB)
-        Assertions.assertEquals(listOf(11, 12, 13, 14, 15), xC)
-    }
-
-    @TestFactory
-    fun `pairwise without initial produces specified pairs`() = listOf(
-        listOf("A", "B", "C", "D") to listOf("A" to "B", "B" to "C", "C" to "D"),
-        listOf(1, 2, 3, 4) to listOf(1 to 2, 2 to 3, 3 to 4),
-        listOf(1) to emptyList(),
-        emptyList<Int>() to emptyList(),
-        listOf<Int?>(1, null, 2, null, 3) to listOf(1 to null, null to 2, 2 to null, null to 3),
-    ).map { (input, expected) ->
-        dynamicTest("From $input to $expected") {
-            @Suppress("DEPRECATION")
-            (Assertions.assertEquals(expected, input.pairwise()))
-        }
-    }
 
     @TestFactory
     fun `pairwise with initial produces specified pairs`() = listOf(
@@ -64,20 +22,6 @@ internal class UtilsTest {
             val source = input.second
             val initial = input.first
             Assertions.assertEquals(expected, source.pairwise(initial))
-        }
-    }
-
-    @TestFactory
-    fun `windowed produces specified lists`() = listOf(
-        (3 to listOf(10, 20, 30, 40, 50)) to listOf(listOf(10, 20, 30), listOf(20, 30, 40), listOf(30, 40, 50)),
-        (3 to listOf(10, 20, 30)) to listOf(listOf(10, 20, 30)),
-        (3 to listOf(10, 20)) to emptyList()
-    ).map { (input, expected) ->
-        dynamicTest("From $input to $expected") {
-            val source = input.second
-            val size = input.first
-            @Suppress("DEPRECATION")
-            (Assertions.assertEquals(expected, source.`makeshift windowed`(size)))
         }
     }
 

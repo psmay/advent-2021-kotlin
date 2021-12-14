@@ -2,8 +2,6 @@
 
 package com.psmay.exp.advent.y2021.util
 
-import java.util.*
-
 // Something option-like and sequence-like that supports *OrNull() implementations and regular ones at the same time
 private data class Found<T>(val value: T)
 
@@ -19,22 +17,6 @@ private fun <T> Found<T>?.toList(): List<T> = if (this == null) emptyList() else
 private fun <T> Found<T>?.asIterable() = toList().asIterable()
 private fun <T> Found<T>?.asSequence() = toList().asSequence()
 
-/**
- * Performs a fold operation one element at a time.
- */
-@Deprecated("Use runningFold(...).drop(1) instead.",
-    replaceWith = ReplaceWith("runningFold(initial, operation).drop(1)"))
-fun <T, R> Sequence<T>.foldIncrementally(initial: R, operation: (R, T) -> R): Sequence<R> {
-    val source = this
-    return sequence {
-        var accumulator = initial
-        for (element in source) {
-            accumulator = operation(accumulator, element)
-            yield(accumulator)
-        }
-    }
-}
-
 fun <T> Sequence<T>.pairwise(initial: T): Sequence<Pair<T, T>> {
     val source = this
     return sequence {
@@ -47,64 +29,6 @@ fun <T> Sequence<T>.pairwise(initial: T): Sequence<Pair<T, T>> {
 }
 
 fun <T> Iterable<T>.pairwise(initial: T) = asSequence().pairwise(initial).toList()
-
-// This actually does the same thing as zipWithNext, which I didn't find out about
-// until later.
-@Deprecated("Use zipWithNext() instead.", replaceWith = ReplaceWith("zipWithNext()"))
-fun <T> Sequence<T>.pairwise(): Sequence<Pair<T, T>> {
-    // This is used so that, if T is nullable, it is still possible to assign separate meanings to null and unset.
-    data class Holder(var item: T)
-
-    val source = this
-    return sequence {
-        var previous: Holder? = null
-        for (element in source) {
-            if (previous == null) {
-                previous = Holder(element)
-            } else {
-                yield(previous.item to element)
-                previous.item = element
-            }
-        }
-    }
-}
-
-@Deprecated("Use zipWithNext() instead.", replaceWith = ReplaceWith("zipWithNext()"))
-fun <T> Iterable<T>.pairwise() =
-    @Suppress("DEPRECATION")
-    asSequence().pairwise().toList()
-
-@Deprecated("Use builtin windowed() instead.", replaceWith = ReplaceWith("windowed()"))
-@Suppress("FunctionName")
-fun <T> Sequence<T>.`makeshift windowed`(size: Int): Sequence<List<T>> {
-    if (size < 1) throw IllegalArgumentException("Window size cannot be less than 1.")
-
-    val buffer: Queue<T> = LinkedList()
-
-    val source = this
-    return sequence {
-        var space = size
-
-        for (element in source) {
-            if (space > 0) {
-                --space
-            } else {
-                buffer.remove()
-            }
-
-            buffer.add(element)
-
-            if (space == 0) {
-                yield(buffer.toList())
-            }
-        }
-    }
-}
-
-@Deprecated("Use builtin windowed() instead.", replaceWith = ReplaceWith("windowed()"))
-@Suppress("FunctionName", "DEPRECATION")
-fun <T> Iterable<T>.`makeshift windowed`(size: Int) =
-    asSequence().`makeshift windowed`(size).toList()
 
 /**
  * Produces the transpose of the specified list of sequences as a sequence of lists.
@@ -234,7 +158,12 @@ fun <T> Set<T>.asSet(): Set<T> = this
  * Returns an infinitely long sequence in which every element is this.
  */
 // It would surprise me if there weren't a more idiomatic way to do this.
-fun <X> X.repeatedForever(): Sequence<X> {
+fun <T> T.repeatedForever(): Sequence<T> {
     val item = this
     return sequence { while (true) yield(item) }
 }
+
+/**
+ * Returns an infinitely long sequence in which every element is Unit.
+ */
+fun repeatedForever() = Unit.repeatedForever()
