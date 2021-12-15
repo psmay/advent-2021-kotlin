@@ -3,6 +3,7 @@ package com.psmay.exp.advent.y2021.tests
 import com.psmay.exp.advent.y2021.Day14.FormulaElement
 import com.psmay.exp.advent.y2021.Day14.FormulaPairInsertionRule
 import com.psmay.exp.advent.y2021.Day14.expanded
+import com.psmay.exp.advent.y2021.Day14.expandedLongCounts
 import com.psmay.exp.advent.y2021.Day14.getElementCounts
 import com.psmay.exp.advent.y2021.Day14.toMap
 import com.psmay.exp.advent.y2021.Day14.yields
@@ -66,11 +67,11 @@ internal class Day14Test {
         val exampleRawInput: UseLinesSource,
         val exampleInput: TestInput,
         val part1Result: Int,
-        val part2Result: Int,
+        val part2Result: Long,
     )
 
     private val testCases = listOf(
-        TestCase(exampleRawInput1, exampleInput1, 1588, -1)
+        TestCase(exampleRawInput1, exampleInput1, 1588, 2188189693529)
     )
 
     private val puzzleRawInput = getTextLineSource("y2021/Day14Input")
@@ -124,17 +125,29 @@ internal class Day14Test {
 
         val template = input.polymerTemplate
 
-        val result = (1..10).fold(template) { it, _ -> it.expanded(rulesMap) }
+        val result = template.asSequence().expanded(rulesMap, 10).toList()
 
         val counts = result.getElementCounts().entries.sortedBy { it.value }
+
         val (_, lowestCount) = counts.first()
         val (_, highestCount) = counts.last()
 
         return highestCount - lowestCount
     }
 
-    private fun part2(input: TestInput): Int {
-        return 0
+    private fun part2(input: TestInput): Long {
+        val rulesMap = input.rules.toMap()
+
+        val template = input.polymerTemplate
+
+        val result = template.asSequence().expandedLongCounts(rulesMap, 40)
+
+        val counts = result.entries.sortedBy { it.value }
+
+        val (_, lowestCount) = counts.first()
+        val (_, highestCount) = counts.last()
+
+        return highestCount - lowestCount
     }
 
     @TestFactory
