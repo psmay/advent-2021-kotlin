@@ -167,3 +167,17 @@ fun <T> T.repeatedForever(): Sequence<T> {
  * Returns an infinitely long sequence in which every element is Unit.
  */
 fun repeatedForever() = Unit.repeatedForever()
+
+/**
+ * A Long equivalent to eachCountTo().
+ */
+// This implementation was swiped from eachCountTo() in the standard lib and adjusted.
+fun <T, K, M : MutableMap<in K, Long>> Grouping<T, K>.eachLongCountTo(destination: M): M =
+    foldTo(destination, 0) { acc, _ -> acc + 1 }
+
+/**
+ * A Long equivalent to eachCount().
+ */
+// This implementation was swiped from eachCount() in the standard lib and adjusted.
+fun <T, K> Grouping<T, K>.eachLongCount() = eachLongCountTo(mutableMapOf())
+
