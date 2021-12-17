@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import kotlin.test.Ignore
 import kotlin.test.assertEquals
 
 internal class Day15Test {
@@ -70,14 +71,7 @@ internal class Day15Test {
         @Suppress("UnnecessaryVariable")
         val grid = input
 
-        for(row in grid.rows) {
-            println("ROW: $row")
-        }
-
         val path = grid.findPath().drop(1).toList()
-        for (x in path) {
-            println("$x ${grid[x]}")
-        }
         val costs = path.map { grid[it] }
         return costs.sum()
     }
@@ -86,9 +80,6 @@ internal class Day15Test {
         val grid = expandGrid(input)
 
         val path = grid.findPath().drop(1).toList()
-        for (x in path) {
-            println("$x ${grid[x]}")
-        }
         val costs = path.map { grid[it] }
         return costs.sum()
     }
@@ -140,8 +131,10 @@ internal class Day15Test {
     }
 
     @Test
+    @Ignore("This runs a very long time (a little over 67 minutes for my run).")
     fun `part2 on puzzle input succeeds`() {
         val result = puzzleRawInput.useLines { lines -> part2(parseAll(lines)) }
+        assertEquals(2806, result)
         println("Result: $result")
     }
 }
