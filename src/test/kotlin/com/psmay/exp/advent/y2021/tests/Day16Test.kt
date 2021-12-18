@@ -1,7 +1,8 @@
 package com.psmay.exp.advent.y2021.tests
 
 import com.psmay.exp.advent.y2021.day16.Header
-import com.psmay.exp.advent.y2021.day16.parseNybbleBitsInput
+import com.psmay.exp.advent.y2021.day16.parseNybbleBitsInputToTokens
+import com.psmay.exp.advent.y2021.day16.parseTokensToPackets
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
@@ -158,14 +159,14 @@ internal class Day16Test {
         sequenceOf("9C005AC2F8F0").asUseLinesSource(),
         sequenceOf("9C0141080250320F1802104A08").asUseLinesSource(),
     )
-    private val examplePart1Results = listOf(6, 9, 14, 16, 12, 23, 31)
+    private val examplePart1Results = listOf(6, 9, 14, 16, 12, 23, 31).map { it.toLong() }
 
-    private val examplePart2Results = listOf(3, 54, 7, 9, 1, 0, 0, 1)
+    private val examplePart2Results = listOf(3, 54, 7, 9, 1, 0, 0, 1).map { it.toLong() }
 
     data class TestCase(
         val exampleRawInput: UseLinesSource,
         val exampleInput: Sequence<Int>,
-        val result: Int,
+        val result: Long,
     )
 
     private val testCasesPart1 = exampleRawInputsPart1.indices.map {
@@ -194,19 +195,21 @@ internal class Day16Test {
         }
     }
 
-    private fun part1(input: Sequence<Int>): Int {
+    private fun part1(input: Sequence<Int>): Long {
         return input
-            .parseNybbleBitsInput()
+            .parseNybbleBitsInputToTokens()
             .map {
                 println("Saw $it")
                 it
             }
             .filterIsInstance<Header>()
-            .sumOf { it.version }
+            .sumOf { it.version.toLong() }
     }
 
-    private fun part2(input: Sequence<Int>): Int {
-        return 0
+    private fun part2(input: Sequence<Int>): Long {
+        val packet = input.parseNybbleBitsInputToTokens().parseTokensToPackets().single()
+
+        return packet.evaluateAsLong()
     }
 
     @TestFactory

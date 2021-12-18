@@ -1,12 +1,131 @@
 package com.psmay.exp.advent.y2021.day16
 
+import com.psmay.exp.advent.y2021.util.emptyQueue
 import com.psmay.exp.advent.y2021.util.mapIterator
+import kotlin.math.max
+import kotlin.math.min
 
 private typealias Biterator = Iterator<Boolean>
+private typealias LongReduce = (Long, Long) -> Long
 
-fun Sequence<Int>.parseNybbleBitsInput() = nybblesToBits().parseBitsInput()
+fun Sequence<Int>.parseNybbleBitsInputToTokens() = nybblesToBits().parseBitsInput()
+
+fun Sequence<BitsOutputToken>.parseTokensToPackets() = this.mapIterator { TokenSource(it).packetSequence().iterator() }
 
 fun Sequence<Boolean>.parseBitsInput() = mapIterator { it.parseBitsInput().iterator() }
+
+//fun <T> List<T>.getOrElse(index: Int, defaultValue: (Int) -> T): T {
+
+// Header(packet type = LITERAL_VALUE) Literal Footer
+// Header(packet type = other) (Packet Length in Bits/Subpackets) (Packet*) Footer
+
+sealed class Packet {
+    abstract val header: Header
+    abstract fun evaluateAsLong(): Long
+}
+
+private data class LiteralPacket(override val header: Header, val literal: Literal) : Packet() {
+    override fun evaluateAsLong(): Long = literal.toLong()
+}
+
+private data class BinaryOperationPacket(
+    override val header: Header,
+    val operation: PacketOperation,
+    val a: Packet,
+    val b: Packet,
+) : Packet() {
+    override fun evaluateAsLong(): Long = operation.operate(a.evaluateAsLong(), b.evaluateAsLong())
+}
+
+private data class VariadicOperationPacket(
+    override val header: Header,
+    val operation: PacketOperation,
+    val operands: List<Packet>,
+) : Packet() {
+    override fun evaluateAsLong(): Long = operation.operate(operands.map { it.evaluateAsLong() })
+}
+
+private class TokenSource(val iterator: Iterator<BitsOutputToken>) {
+    private val buffer = emptyQueue<BitsOutputToken>()
+
+    fun ready(): Boolean = if (buffer.isNotEmpty()) {
+        true
+    } else if (iterator.hasNext()) {
+        buffer.addLast(iterator.next())
+        true
+    } else {
+        false
+    }
+
+    fun peek(): BitsOutputToken? = if (ready()) buffer.first() else null
+
+    fun take(): BitsOutputToken =
+        if (ready()) buffer.removeFirst() else throw IllegalStateException("Reached end of input before packet ended.")
+
+    fun takeHeader(): Header {
+        val token = take()
+        return token as? Header ?: throw IllegalStateException("Expected header; read $token")
+    }
+
+    fun takeLiteral(): Literal {
+        val token = take()
+        return token as? Literal ?: throw IllegalStateException("Expected literal; read $token")
+    }
+
+    fun discardPacketLength() {
+        val token = take()
+        if (token !is PacketLengthInBits && token !is PacketLengthInSubpackets) {
+            throw IllegalStateException("Expected packet length; read $token")
+        }
+    }
+
+    fun takeFooter(): Footer {
+        val token = take()
+        return token as? Footer ?: throw IllegalStateException("Expected footer; read $token")
+    }
+
+    fun peekFooter(): Boolean {
+        val token = peek()
+        return (token != null) && (token is Footer)
+    }
+
+    fun packetSequence() = sequence {
+        while (ready()) {
+            yield(collectOnePacket())
+        }
+    }
+
+    fun collectOnePacket(): Packet {
+        val header = takeHeader()
+
+        if (header.type == PacketType.LITERAL_VALUE) {
+            val literal = takeLiteral()
+            takeFooter()
+
+            return LiteralPacket(header, literal)
+        } else {
+            val operation = header.type.operation!!
+            discardPacketLength()
+
+            val subpackets = mutableListOf<Packet>()
+            while (ready() && !peekFooter()) {
+                subpackets.add(collectOnePacket())
+            }
+
+            takeFooter()
+
+            return if (operation.binaryOnly) {
+                if (subpackets.size != 2) {
+                    throw IllegalStateException("Operation for ${header.type} requires exactly 2 operands; ${subpackets.size} operand(s) were found.")
+                }
+                val (a, b) = subpackets
+                BinaryOperationPacket(header, operation, a, b)
+            } else {
+                VariadicOperationPacket(header, operation, subpackets.toList())
+            }
+        }
+    }
+}
 
 private fun Biterator.takeOnePacket(): Sequence<TokenWithLength> = sequence {
     var bitsRead = 0
@@ -71,6 +190,7 @@ private fun Biterator.takeOnePacket(): Sequence<TokenWithLength> = sequence {
         }
     }
 
+    yield(Footer.withLength(0).toOutput())
 }
 
 fun Biterator.parseBitsInput() = takeOnePacket().map { (_, token) -> token }
@@ -121,6 +241,8 @@ private val allowedHexDigitsPattern = """^(?:0|[1-9A-F][0-9A-F]*)$""".toRegex()
 sealed class BitsOutputToken {}
 
 data class Header(val version: Int, val typeId: Int) : BitsOutputToken()
+object Footer : BitsOutputToken() {}
+
 @Suppress("unused")
 data class Literal(val hexDigits: String) : BitsOutputToken() {
     init {
@@ -137,7 +259,7 @@ data class Literal(val hexDigits: String) : BitsOutputToken() {
 data class PacketLengthInBits(val length: Int) : BitsOutputToken()
 data class PacketLengthInSubpackets(val length: Int) : BitsOutputToken()
 
-private val Header.type get() = PacketType.valueOfIdOrNull(typeId)
+private val Header.type get() = PacketType.valueOfId(typeId)
 
 private fun LengthType.toToken(length: Int): BitsOutputToken = when (this) {
     LengthType.LENGTH_BITS -> PacketLengthInBits(length)
@@ -228,9 +350,26 @@ private fun hexDigitsToString(chars: List<Char>): String {
         .ifEmpty { "0" } // if the string was all zeros, prevent it from being blank
 }
 
+private class PacketOperation(val binaryOnly: Boolean, val reduceOperation: LongReduce) {
+    fun operate(a: Long, b: Long) = reduceOperation(a, b)
+    fun operate(operands: Iterable<Long>): Long {
+        if (binaryOnly) {
+            throw IllegalStateException("This operation cannot be applied to an iterable.")
+        }
+        return operands.reduce(reduceOperation)
+    }
+}
+
 @Suppress("unused")
-private enum class PacketType(val id: Int) {
-    LITERAL_VALUE(4);
+private enum class PacketType(val id: Int, val operation: PacketOperation?) {
+    SUM(0, PacketOperation(false) { a, b -> a + b }),
+    PRODUCT(1, PacketOperation(false) { a, b -> a * b }),
+    MINIMUM(2, PacketOperation(false) { a, b -> min(a, b) }),
+    MAXIMUM(3, PacketOperation(false) { a, b -> max(a, b) }),
+    LITERAL_VALUE(4, null),
+    GREATER_THAN(5, PacketOperation(true) { a, b -> if (a > b) 1 else 0 }),
+    LESS_THAN(6, PacketOperation(true) { a, b -> if (a < b) 1 else 0 }),
+    EQUAL_TO(7, PacketOperation(true) { a, b -> if (a == b) 1 else 0 });
 
     companion object {
         private val byId = values().associateBy({ it.id }, { it })
