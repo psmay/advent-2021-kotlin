@@ -1,5 +1,7 @@
 package com.psmay.exp.advent.y2021.tests
 
+import com.psmay.exp.advent.y2021.day16.Header
+import com.psmay.exp.advent.y2021.day16.parseNybbleBitsInput
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.getTextLineSource
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.TestFactory
 
 internal class Day16Test {
     private val exampleInputs = listOf(
+        sequenceOf(0xD, 0x2, 0xF, 0xE, 0x2, 0x8),
         sequenceOf(0x3, 0x8, 0x0, 0x0, 0x6, 0xF, 0x4, 0x5, 0x2, 0x9, 0x1, 0x2, 0x0, 0x0),
         sequenceOf(0xE, 0xE, 0x0, 0x0, 0xD, 0x4, 0x0, 0xC, 0x8, 0x2, 0x3, 0x0, 0x6, 0x0),
         sequenceOf(0x8, 0xA, 0x0, 0x0, 0x4, 0xA, 0x8, 0x0, 0x1, 0xA, 0x8, 0x0, 0x0, 0x2, 0xF, 0x4, 0x7, 0x8),
@@ -100,6 +103,7 @@ internal class Day16Test {
     )
 
     private val exampleRawInputs = listOf(
+        sequenceOf("D2FE28").asUseLinesSource(),
         sequenceOf("38006F45291200").asUseLinesSource(),
         sequenceOf("EE00D40C823060").asUseLinesSource(),
         sequenceOf("8A004A801A8002F478").asUseLinesSource(),
@@ -108,9 +112,9 @@ internal class Day16Test {
         sequenceOf("A0016C880162017C3686B18A3D4780").asUseLinesSource(),
     )
 
-    private val examplePart1Results = listOf(1, 7, 16, 12, 23, 31)
+    private val examplePart1Results = listOf(6, 9, 14, 16, 12, 23, 31)
 
-    private val examplePart2Results = listOf(-1, -1, -1, -1, -1, -1)
+    private val examplePart2Results = listOf(-1, -1, -1, -1, -1, -1, -1)
 
     data class TestCase(
         val exampleRawInput: UseLinesSource,
@@ -141,7 +145,14 @@ internal class Day16Test {
     }
 
     private fun part1(input: Sequence<Int>): Int {
-        return 0
+        return input
+            .parseNybbleBitsInput()
+            .map {
+                println("Saw $it")
+                it
+            }
+            .filterIsInstance<Header>()
+            .sumOf { it.version }
     }
 
     private fun part2(input: Sequence<Int>): Int {
