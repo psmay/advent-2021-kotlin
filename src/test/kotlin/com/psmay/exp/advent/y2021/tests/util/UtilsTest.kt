@@ -105,4 +105,28 @@ internal class UtilsTest {
         assertEquals(listOf("E", "X", "A", "M", "P", "L", "E"), from.takeThroughFirst { it == "Z" }.toList())
         assertEquals(listOf(), from.dropThroughFirst { it == "Z" }.toList())
     }
+
+    @Test
+    fun `takeWhileThenTake works as expected`() {
+        val from = sequenceOf("E", "X", "A", "M", "P", "L", "E")
+        assertEquals(listOf("E", "X", "A", "M", "P"), from.takeWhileThenTake(3) { it != "A" }.toList())
+        assertEquals(listOf("E", "X", "A", "M", "P", "L", "E"), from.takeWhileThenTake(3) { it != "L" }.toList())
+        assertEquals(listOf("E", "X", "A", "M", "P", "L", "E"), from.takeWhileThenTake(3) { it != "Z" }.toList())
+
+        assertEquals(listOf("E", "X"), from.takeWhileThenTake(0) { it != "A" }.toList())
+        assertEquals(listOf("E", "X", "A", "M", "P"), from.takeWhileThenTake(0) { it != "L" }.toList())
+        assertEquals(listOf("E", "X", "A", "M", "P", "L", "E"), from.takeWhileThenTake(0) { it != "Z" }.toList())
+    }
+
+    @Test
+    fun `dropWhileThenDrop works as expected`() {
+        val from = sequenceOf("E", "X", "A", "M", "P", "L", "E")
+        //assertEquals(listOf("L", "E"), from.dropWhileThenDrop(3) { it != "A" }.toList())
+        //assertEquals(listOf(), from.dropWhileThenDrop(3) { it != "L" }.toList())
+        //assertEquals(listOf(), from.dropWhileThenDrop(3) { it != "Z" }.toList())
+
+        assertEquals(listOf("A", "M", "P", "L", "E"), from.dropWhileThenDrop(0) { it != "A" }.toList())
+        assertEquals(listOf("L", "E"), from.dropWhileThenDrop(0) { it != "L" }.toList())
+        assertEquals(listOf(), from.dropWhileThenDrop(0) { it != "Z" }.toList())
+    }
 }
