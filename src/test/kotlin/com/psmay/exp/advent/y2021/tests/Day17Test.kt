@@ -2,6 +2,7 @@ package com.psmay.exp.advent.y2021.tests
 
 import com.psmay.exp.advent.y2021.day17.TargetArea
 import com.psmay.exp.advent.y2021.day17.parseTargetArea
+import com.psmay.exp.advent.y2021.day17.scanForAllHits
 import com.psmay.exp.advent.y2021.day17.scanForHighestHit
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
@@ -28,7 +29,7 @@ internal class Day17Test {
     )
 
     private val testCases = listOf(
-        TestCase(exampleRawInput1, exampleInput1, 45, -1)
+        TestCase(exampleRawInput1, exampleInput1, 45, 112)
     )
 
     private val puzzleRawInput = getTextLineSource("y2021/Day17Input")
@@ -56,7 +57,9 @@ internal class Day17Test {
     }
 
     private fun part2(input: List<TargetArea>): Int {
-        return 0
+        val area = input.single()
+        val hits = scanForAllHits(area)
+        return hits.count()
     }
 
     @TestFactory

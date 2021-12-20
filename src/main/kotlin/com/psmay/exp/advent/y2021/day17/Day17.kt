@@ -6,7 +6,7 @@ import com.psmay.exp.advent.y2021.util.repeatedForever
 import kotlin.math.abs
 import kotlin.math.sign
 
-private typealias IntPair = Pair<Int,Int>
+private typealias IntPair = Pair<Int, Int>
 
 private inline val IntPair.x get() = this.first
 private inline val IntPair.y get() = this.second
@@ -81,7 +81,7 @@ fun scanForHighestHit(area: TargetArea): Pair<IntPair, IntPair> {
         ?: throw Exception("We blame the input")
 }
 
-private fun scanForAllHits(area: TargetArea): Sequence<Pair<IntPair, Sequence<SimulatedInstant>>> {
+fun scanForAllHits(area: TargetArea): Sequence<Pair<IntPair, Sequence<SimulatedInstant>>> {
     val simulations = velocitiesToScan(area).map { startVelocity ->
         // Take number is borrowed from other people's solutions
         (startVelocity to simulatedInstants(startVelocity).take(2 * abs(area.bottom) + 2))
