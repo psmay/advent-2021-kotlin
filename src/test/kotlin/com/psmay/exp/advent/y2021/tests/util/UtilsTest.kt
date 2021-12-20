@@ -1,13 +1,11 @@
 package com.psmay.exp.advent.y2021.tests.util
 
-import com.psmay.exp.advent.y2021.util.minAndMaxOrNull
-import com.psmay.exp.advent.y2021.util.pairwise
-import com.psmay.exp.advent.y2021.util.transpose
-import com.psmay.exp.advent.y2021.util.triangle
+import com.psmay.exp.advent.y2021.util.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
+import kotlin.test.assertEquals
 
 internal class UtilsTest {
 
@@ -92,5 +90,43 @@ internal class UtilsTest {
                 Assertions.assertEquals(input.`old minAndMaxOrNull`(), input.asSequence().minAndMaxOrNull())
             }
         )
+    }
+
+    @Test
+    fun `takeThroughFirst and dropThroughFirst when there is a first`() {
+        val from = sequenceOf("E", "X", "A", "M", "P", "L", "E")
+        assertEquals(listOf("E", "X", "A", "M"), from.takeThroughFirst { it == "M" }.toList())
+        assertEquals(listOf("P", "L", "E"), from.dropThroughFirst { it == "M" }.toList())
+    }
+
+    @Test
+    fun `takeThroughFirst and dropThroughFirst when there is not a first`() {
+        val from = sequenceOf("E", "X", "A", "M", "P", "L", "E")
+        assertEquals(listOf("E", "X", "A", "M", "P", "L", "E"), from.takeThroughFirst { it == "Z" }.toList())
+        assertEquals(listOf(), from.dropThroughFirst { it == "Z" }.toList())
+    }
+
+    @Test
+    fun `takeWhileThenTake works as expected`() {
+        val from = sequenceOf("E", "X", "A", "M", "P", "L", "E")
+        assertEquals(listOf("E", "X", "A", "M", "P"), from.takeWhileThenTake(3) { it != "A" }.toList())
+        assertEquals(listOf("E", "X", "A", "M", "P", "L", "E"), from.takeWhileThenTake(3) { it != "L" }.toList())
+        assertEquals(listOf("E", "X", "A", "M", "P", "L", "E"), from.takeWhileThenTake(3) { it != "Z" }.toList())
+
+        assertEquals(listOf("E", "X"), from.takeWhileThenTake(0) { it != "A" }.toList())
+        assertEquals(listOf("E", "X", "A", "M", "P"), from.takeWhileThenTake(0) { it != "L" }.toList())
+        assertEquals(listOf("E", "X", "A", "M", "P", "L", "E"), from.takeWhileThenTake(0) { it != "Z" }.toList())
+    }
+
+    @Test
+    fun `dropWhileThenDrop works as expected`() {
+        val from = sequenceOf("E", "X", "A", "M", "P", "L", "E")
+        //assertEquals(listOf("L", "E"), from.dropWhileThenDrop(3) { it != "A" }.toList())
+        //assertEquals(listOf(), from.dropWhileThenDrop(3) { it != "L" }.toList())
+        //assertEquals(listOf(), from.dropWhileThenDrop(3) { it != "Z" }.toList())
+
+        assertEquals(listOf("A", "M", "P", "L", "E"), from.dropWhileThenDrop(0) { it != "A" }.toList())
+        assertEquals(listOf("L", "E"), from.dropWhileThenDrop(0) { it != "L" }.toList())
+        assertEquals(listOf(), from.dropWhileThenDrop(0) { it != "Z" }.toList())
     }
 }
