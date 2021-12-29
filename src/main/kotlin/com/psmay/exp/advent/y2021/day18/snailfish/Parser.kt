@@ -1,5 +1,8 @@
 package com.psmay.exp.advent.y2021.day18.snailfish
 
+import com.psmay.exp.advent.y2021.day18.snailfish.Element.Doublet
+import com.psmay.exp.advent.y2021.day18.snailfish.Element.Figure
+import com.psmay.exp.advent.y2021.day18.snailfish.Parser.Token.*
 import com.psmay.exp.advent.y2021.util.PeekingIterator
 import com.psmay.exp.advent.y2021.util.nextOrElse
 import com.psmay.exp.advent.y2021.util.peekOrElse
@@ -8,16 +11,16 @@ import com.psmay.exp.advent.y2021.util.withPeeking
 internal object Parser {
     sealed class Token {
         abstract val text: String
-    }
 
-    private data class StartBracketToken(override val text: String) : Token()
-    private data class EndBracketToken(override val text: String) : Token()
-    private data class CommaToken(override val text: String) : Token()
-    private data class FigureToken(override val text: String) : Token() {
-        fun toLong() = text.toLong()
-    }
+        data class StartBracketToken(override val text: String) : Token()
+        data class EndBracketToken(override val text: String) : Token()
+        data class CommaToken(override val text: String) : Token()
+        data class FigureToken(override val text: String) : Token() {
+            fun toLong() = text.toLong()
+        }
 
-    private data class InvalidCharacterToken(override val text: String) : Token()
+        data class InvalidCharacterToken(override val text: String) : Token()
+    }
 
     private var tokenRegex = """\G(?:(\[)|(])|(,)|(-?[0-9]+)|(.))""".toRegex()
 
