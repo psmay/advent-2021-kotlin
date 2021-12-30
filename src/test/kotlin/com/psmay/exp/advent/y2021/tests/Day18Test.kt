@@ -1,6 +1,7 @@
 package com.psmay.exp.advent.y2021.tests
 
 import com.psmay.exp.advent.y2021.day18.snailfish.Element
+import com.psmay.exp.advent.y2021.day18.snailfish.snailAddTo
 import com.psmay.exp.advent.y2021.day18.snailfish.snailTo
 import com.psmay.exp.advent.y2021.tests.helpers.UseLinesSource
 import com.psmay.exp.advent.y2021.tests.helpers.asUseLinesSource
@@ -41,8 +42,8 @@ internal class Day18Test {
     data class TestCase(
         val exampleRawInput: UseLinesSource,
         val exampleInput: Sequence<Element>,
-        val part1Result: Int,
-        val part2Result: Int,
+        val part1Result: Long,
+        val part2Result: Long,
     )
 
     private val testCases = listOf(
@@ -53,11 +54,12 @@ internal class Day18Test {
 
     private fun parseLine(line: String): Element = Element.parse(line)
 
-    private fun part1(input: Sequence<Element>): Int {
-        return 0
+    private fun part1(input: Sequence<Element>): Long {
+        val total = input.reduce { a, b -> a.snailAddTo(b) }
+        return total.magnitude
     }
 
-    private fun part2(input: Sequence<Element>): Int {
+    private fun part2(input: Sequence<Element>): Long {
         return 0
     }
 
