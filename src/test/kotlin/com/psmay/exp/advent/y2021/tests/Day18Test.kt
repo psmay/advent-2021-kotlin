@@ -47,7 +47,7 @@ internal class Day18Test {
     )
 
     private val testCases = listOf(
-        TestCase(exampleRawInput1, exampleInput1, 4140, -1),
+        TestCase(exampleRawInput1, exampleInput1, 4140, 3993),
     )
 
     private val puzzleRawInput = getTextLineSource("y2021/Day18Input")
@@ -60,7 +60,16 @@ internal class Day18Test {
     }
 
     private fun part2(input: Sequence<Element>): Long {
-        return 0
+        val elements = input.toList()
+
+        // Every distinct pair of indices in the given elements, where order is important.
+        val indices = elements.indices.asSequence()
+        val indexPairs = indices.flatMap { ai -> indices.filter { bi -> ai != bi }.map { bi -> ai to bi } }
+        val elementPairs = indexPairs.map { (a, b) -> elements[a] to elements[b] }
+
+        val magnitudes = elementPairs.map { (a, b) -> a.snailAddTo(b).magnitude }
+
+        return magnitudes.maxOrNull()!!
     }
 
     @TestFactory
