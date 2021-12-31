@@ -129,4 +129,42 @@ internal class UtilsTest {
         assertEquals(listOf("L", "E"), from.dropWhileThenDrop(0) { it != "L" }.toList())
         assertEquals(listOf(), from.dropWhileThenDrop(0) { it != "Z" }.toList())
     }
+
+    @Test
+    fun `splice works as expected`() {
+        fun example() = mutableListOf("E", "X", "A", "M", "P", "L", "E")
+
+        run {
+            val m = example()
+            m.discard(3..5)
+            assertEquals(listOf("E", "X", "A", "E"), m.toList())
+        }
+        run {
+            val m = example()
+            val extracted = m.splice(3..5)
+            assertEquals(listOf("E", "X", "A", "E"), m.toList())
+            assertEquals(listOf("M", "P", "L"), extracted)
+        }
+        run {
+            val m = example()
+            val insertable = listOf("B", "Y", "T")
+            val extracted = m.splice(3..5, insertable)
+            assertEquals(listOf("E", "X", "A", "B", "Y", "T", "E"), m.toList())
+            assertEquals(listOf("M", "P", "L"), extracted)
+        }
+        run {
+            val m = example()
+            val insertable = listOf("B", "Y", "T").asSequence()
+            val extracted = m.splice(3..5, insertable)
+            assertEquals(listOf("E", "X", "A", "B", "Y", "T", "E"), m.toList())
+            assertEquals(listOf("M", "P", "L"), extracted)
+        }
+        run {
+            val m = example()
+            val insertable = listOf("B", "Y", "T").iterator()
+            val extracted = m.splice(3..5, insertable)
+            assertEquals(listOf("E", "X", "A", "B", "Y", "T", "E"), m.toList())
+            assertEquals(listOf("M", "P", "L"), extracted)
+        }
+    }
 }
