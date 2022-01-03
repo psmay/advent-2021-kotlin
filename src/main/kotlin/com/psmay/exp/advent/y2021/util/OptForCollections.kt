@@ -295,5 +295,14 @@ fun <T> Iterable<T>.elementAtOpt(index: Int) = this.asSequence().elementAtOpt(in
 // For MutableList
 //
 
+/**
+ * Removes the first element from this mutable list and returns that element as an option, or returns an empty option
+ * if this list is empty.
+ */
 fun <T> MutableList<T>.removeFirstOpt(): Opt<T> = if (isEmpty()) emptyOpt() else optOf(removeFirst())
+
+/**
+ * Removes the last element from this mutable list and returns that element as an option, or returns an empty option
+ * if this list is empty.
+ */
 fun <T> MutableList<T>.removeLastOpt(): Opt<T> = if (isEmpty()) emptyOpt() else optOf(removeLast())
